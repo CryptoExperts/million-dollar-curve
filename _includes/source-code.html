@@ -1,0 +1,146 @@
+<p class="lead" id="code_overview">Code overview</p>
+<p>
+  We provide 5 scripts, written in Python 3, that implement the whole methodology described in the technical paper:
+</p>
+<div class="card">
+  <div class="card-header"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;<code>01_draws_to_seed.py</code></div>
+  <div class="card-block">
+    <p>takes as an input the path to a text file containing an ordered list of lottery draws, the quantity of entropy to be extracted from those draws (in a format described in the <a href="#tutorial">tutorial</a>), and the number of lone bits to add. It outputs a JSON file containing the following parameters:
+      <ul>
+        <li>
+          <var>seed</var>: the integer value of the seed.</li>
+        <li>
+          <var>seed_upper_bound</var>: an integer such that the seed lies between 0 (included) and
+          <var>seed_upper_bound</var> (excluded).</li>
+        <li>
+          <var>approx_seed_entropy</var>: an approximate value of the quantity of entropy contained in the seed. Note that the quantity of entropy given as an input to the script is a <em>minimum</em> value, so that the final quantity will typically contain a few more bits.</li>
+        <li>
+          <var>lone_bits</var>: The number of <em>lone bits</em> included in the seed, as given as an input to this script.</li>
+      </ul>
+      In case the requested minimum quantity of entropy cannot be extracted from the lottery draws, this script fails and doesn't create the output file. Also, if the output file already exists, the script exits immediately.</p>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;<code>02_generate_bbs_parameters.py</code></div>
+  <div class="card-block">
+    <p>takes as an input an integer
+      <var>min_prime_bitsize</var> and a JSON file containing a
+      <var>seed</var> and its upper bound. Typically, the input JSON file results from an execution of the previous script. It outputs a JSON file containing the following parameters:
+      <ul>
+        <li>
+          <var>bbs_p</var>: a strong strong prime of size
+          <var>min_prime_bitsize</var> (or more).</li>
+        <li>
+          <var>bbs_q</var>: another strong strong prime of size
+          <var>min_prime_bitsize</var> (or more).</li>
+        <li>
+          <var>bbs_s</var>: a proper starting point for
+          <abbr title="Blum-Blum-Shub PRNG">BBS</abbr> (i.e., a quadratic residue of \(\mathbb{Z}_{pq}^*\)).</li>
+      </ul>
+      This script makes sure that the
+      <var>seed</var> contains enough entropy to properly generate the parameters above. If this is not the case, it exists and doesn't create the output file. Also, if the output file already exists, the script exits immediately.</p>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;<code>03_generate_prime_field_using_bbs.py</code></div>
+  <div class="card-block">
+    <p>takes as an input an integer
+      <var>prime_size</var> and a JSON file containing the parameters of
+      <abbr title="Blum-Blum-Shub PRNG">BBS</abbr>. Typically, the input JSON file results from an execution of the previous script. It outputs a JSON file containing the following parameters:
+      <ul>
+        <li>
+          <var>p</var>: a prime (congruent to \(3 \bmod 4\)) of
+          <var>prime_size</var> bits, generated using
+          <abbr title="Blum-Blum-Shub PRNG">BBS</abbr>.</li>
+        <li>
+          <var>bbs_p</var>: the exact same strong strong prime
+          <var>bbs_p</var> specified in the input JSON file.</li>
+        <li>
+          <var>bbs_q</var>: the exact same strong strong prime
+          <var>bbs_q</var> specified in the input JSON file.</li>
+        <li>
+          <var>bbs_s</var>: the internal state of
+          <abbr title="Blum-Blum-Shub PRNG">BBS</abbr> after the generation of
+          <var>p</var> (which is a quadratic residue of \(\mathbb{Z}_{pq}^*\)).</li>
+      </ul>
+      This script fails if
+      <var>bbs_p</var> or
+      <var>bbs_q</var> are not strong strong primes, or if the output file already exists. In such cases, it exists immediately and doesn't create the output file.</p>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;<code>04_generate_curve_using_bbs.py</code></div>
+  <div class="card-block">
+    <p>takes as an input a JSON file containing the parameters of
+      <abbr title="Blum-Blum-Shub PRNG">BBS</abbr> and a prime
+      <var>p</var>. It outputs a JSON file containing the following parameters:
+      <ul>
+        <li>
+          <var>p</var>: the prime \(p\) as given in the input JSON file.</li>
+        <li>
+          <var>d</var>: the parameter \(d \in \mathbb{F}_p \setminus \{0,1\}\) of the equation of the Edwards curve $$E(\mathbb{F}_p) \;:\; x^2+y^2 = 1 + d x^2 y^2.$$</li>
+        <li>
+          <var>cardinality</var>: the cardinality of \(E(\mathbb{F}_p)\).</li>
+        <li>
+          <var>cardinality_twist</var>: the cardinality of the twist of \(E(\mathbb{F}_p)\).</li>
+        <li>
+          <var>trace</var>: the trace of the curve.</li>
+      </ul>
+      The output JSON file provides a base point \((x,y) \in E(\mathbb{F}_p) \) for the curve, generating a subgroup of cardinality \(\#E(\mathbb{F}_p) / 4\):
+      <ul>
+        <li>base_point_x
+          <var></var>: the \(x\) coordinate of the base point.</li>
+        <li>base_point_y
+          <var></var>: the \(y\) coordinate of the base point.</li>
+      </ul>
+      The script search for an acceptable curve by testing candidates iteratively (and deterministically). The number of the good candidate is saved to the output JSON file:
+      <ul>
+        <li>
+          <var>candidate_nbr</var>: number of the good candidate.</li>
+      </ul>
+      Finally, the output JSON file also contains the
+      <abbr title="Blum-Blum-Shub PRNG">BBS</abbr> after the generation of the curve and of the base point.
+      <br> The script has two optional parameters <code>--start</code> and <code>--max_nbr_of_tests</code> that provide basic support for launching several instances of this script in parallel:
+      <ul>
+        <li><code>--start START</code> allows to start the search for a good candidate from the candidate number <code>START</code>.</li>
+        <li><code>--max_nbr_of_tests MAX_NBR_OF_TESTS</code> allows to make the script exit after <code>MAX_NBR_OF_TESTS</code> candidates (unless a good candidate is found).
+        </li>
+      </ul>
+      The third (and last) optional parameter <code>--fast</code> allows to discard bad candidates much faster by taking advantage of the fact that the Schoof–Elkies–Atkin algorithm implementation that we use to compute \(\#E(\mathbb{F}_p)\) can exit early if it detects that \(\#E(\mathbb{F}_p)\) will eventually be divisible by a small prime \(> 4\). When using this option, the cardinalities of bad candidates are not always output to the standard output.</p>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;<code>05_prove_primes.py</code></div>
+  <div class="card-block">
+    <p>When they require to test whether a number is prime, the four previous scripts only check that it is a <em>pseudo-prime</em>. This script implements a (generalized)
+      <a href="https://en.wikipedia.org/wiki/Pocklington_primality_test">Pocklington primality test</a> to actually <em>prove</em> that the list of pseudo-primes given as an input are indeed primes.</p>
+  </div>
+</div>
+<p class="lead" id="helpers">Helpers</p>
+<p>
+  The 5 scripts rely on the following 4 helpers:
+  <ul>
+    <li><code>bbsengine.py</code> is a simple implementation of
+      <abbr title="Blum-Blum-Shub PRNG">BBS</abbr>.</li>
+    <li><code>pari_light_interface.py</code> is a simple interface to a few routines provided by the PARI C library. None of the functions defined in this file are actually called from the five main scripts. Rather, they are called in the following helper.</li>
+    <li><code>subroutines.py</code> provides mathematical helper functions.</li>
+    <li><code>utils.py</code> provides basic functions for printing information on screen, etc.</li>
+  </ul>
+</p>
+<p class="lead" id="required_libs">Required libraries</p>
+<p>
+  Altogether, the scripts rely on several standard Python 3 libraries (argparse, bbsengine, ctypes, ctypes.util, datetime, json, math, os, re, subroutines, and sys) and on <a href="https://gmplib.org">GMP</a>, using
+  <a href="https://pypi.python.org/pypi/gmpy2">gmpy2</a>. By means of the <code>pari_light_interface.py</code> helper, they also make call to the <a href="http://pari.math.u-bordeaux.fr">PARI</a> library (that should therefore be installed too). Since we use PARI to count point on elliptic curves, the <code>seadata.tgz</code> must be installed too (this package is otherwise optional in most PARI implementations). To install this package, see
+  <a href="http://pari.math.u-bordeaux.fr/packages.html">Optional PARI/GP packages</a>.
+</p>
+<p>
+  These libraries should be readily available on Linux, and are easy to install on Mac OS X using
+  <a href="https://www.macports.org">MacPorts</a>. Installing the <code>seadata.tgz</code> package for PARI is only slightly more involved. The source code we provide has been extensively tested with the 3.4.3 release of Python, the 2.0.7 version of gmpy2, and the 2.7.4 version of PARI.
+</p>
+<p class="lead" id="download">Download</p>
+<p>
+  All the source code (scripts and helpers) is available on GitHub.
+</p>
+<p>
+  <a href="https://github.com/CryptoExperts/million-dollar-curve" class="btn btn-primary">Source code&nbsp;&nbsp;<i class="fa fa-github"></i></a>
+</p>

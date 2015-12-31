@@ -1,0 +1,260 @@
+html {
+  text-align: justify;
+}
+
+h1 {
+  padding-top: 4rem;
+  font-weight: 200;
+}
+
+#sidebar {
+  position: absolute;
+  padding-top: 4rem;
+  text-align: left;
+  top: 0px;
+}
+
+#sidebar .hidden {
+  display: none;
+}
+
+#sidebar ul.subnav {
+  display: none;
+  font-size: .75em;
+  padding-left: 20px;
+}
+
+#sidebar .open-active + ul.subnav {
+  display: block !important;
+}
+
+#sidebar.fixed {
+  position: fixed;
+}
+
+@media (min-width: 768px) {
+  #sidebar {
+    width: 165px;
+  }
+}
+
+@media (min-width: 992px) {
+  #sidebar {
+    width: 220px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #sidebar {
+    width: 270px;
+  }
+}
+
+.rightcolumn {
+  background-color: #eee;
+  border-left: 1rem solid blue;
+}
+
+*:focus {
+  outline: 0 !important;
+}
+
+.next-h1 {
+  line-height: 1;
+  margin-top: .75rem;
+  font-size: 2rem;
+  float: right;
+  margin-left: .5rem;
+}
+
+#hero-curve {
+  stroke: rgb(55, 58, 60);
+}
+
+.mdc-jumbotron-footer {
+  margin-bottom: 0px;
+  margin-top: 5rem;
+  padding-bottom: 0rem;
+  padding-top: 0rem;
+}
+
+.mdc-jumbotron-footer-div {
+  min-height: 100vh;
+}
+
+.mdc-jumbotron-footer .next-h1 {
+  color: rgb(55, 58, 60);
+}
+
+figure.highlight {
+  background-color: #eeeeee;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.jumbotron .btn {
+  margin-top: 1rem;
+}
+
+.lotteries th,
+.lotteries td,
+.lotteries thead th,
+.lotteries thead td {
+  vertical-align: middle;
+  height: 3rem;
+  overflow: hidden;
+  padding: 0 .75rem;
+  text-align: center;
+}
+
+.table.lotteries tr.change-country th,
+.table.lotteries tr.change-country td {
+  border-top: 1px solid #666;
+}
+
+.table.lotteries th:first-child {
+  text-align: left;
+  width: 100%;
+}
+
+.big_table {
+  overflow: auto;
+}
+
+code {
+  color: rgba(55, 58, 60, 0.8);
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.lead {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: rgb(255, 76, 0);
+}
+
+.jumbotron .lead {
+  color: rgb(55, 58, 60);
+}
+
+.alert-danger {
+  color: rgb(255, 76, 0);
+  background-color: rgba(255, 76, 0, 0.2);
+}
+
+.timeline {
+  list-style: none;
+  padding: 20px 0 20px;
+  position: relative;
+}
+
+.timeline > li {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timeline > li:before,
+.timeline > li:after {
+  content: " ";
+  display: table;
+}
+
+.timeline > li:after {
+  clear: both;
+}
+
+.timeline > li > .timeline-badge {
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 1.4em;
+  text-align: center;
+  position: absolute;
+  top: 38px;
+  background-color: #999999;
+  z-index: 100;
+  border-top-right-radius: 50%;
+  border-top-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.timeline-badge.primary {
+  background-color: #0275d8 !important;
+}
+
+.timeline-badge.success {
+  background-color: #5cb85c !important;
+}
+
+.timeline-card {
+  width: calc(100% - 90px);
+  width: -moz-calc(100% - 90px);
+  width: -webkit-calc(100% - 90px);
+  float: right;
+  border: 1px solid #d4d4d4;
+  border-radius: 2px;
+  position: relative;
+}
+
+.timeline > li > .timeline-card:before {
+  position: absolute;
+  top: 48px;
+  right: -15px;
+  display: inline-block;
+  border-top: 15px solid transparent;
+  border-left: 15px solid #ccc;
+  border-right: 0 solid #ccc;
+  border-bottom: 15px solid transparent;
+  content: " ";
+}
+
+.timeline > li > .timeline-card:after {
+  position: absolute;
+  top: 49px;
+  right: -14px;
+  display: inline-block;
+  border-top: 14px solid transparent;
+  border-left: 14px solid #fff;
+  border-right: 0 solid #fff;
+  border-bottom: 14px solid transparent;
+  content: " ";
+}
+
+.timeline:before {
+  position: absolute;
+  top: 10px;
+  bottom: 40px;
+  left: 40px;
+  content: " ";
+  width: 3px;
+  background-color: #eeeeee;
+}
+
+ul.timeline > li > .timeline-badge {
+  left: 15px;
+  margin-left: 0;
+  top: 38px;
+}
+
+ul.timeline > li > .timeline-card:before {
+  border-left-width: 0;
+  border-right-width: 15px;
+  left: -15px;
+  right: auto;
+}
+
+ul.timeline > li > .timeline-card:after {
+  border-left-width: 0;
+  border-right-width: 14px;
+  left: -14px;
+  right: auto;
+}
+
+.card {
+  overflow: auto;
+}

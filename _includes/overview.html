@@ -1,0 +1,89 @@
+<p>
+  Today most of elliptic-curve cryptography relies on the same set of curves: ANSSI FRP256v1, NIST P-256, NIST P-384, Curve25519, secp256k1, brainpoolP256t1, Curve1174 and a few others.
+</p>
+<p>
+  However, most of these curves parameters generation processes contain unjustified choices, specific constants or specific hash algorithms. Examples include the NIST P256 curve, whose parameters are derived from an unjustified seed (<em>C49D3608 86E70493 6A6678E1 139D26B7 819F7E90</em>), and the ANSSI FRP256v1 curve, for which no justification whatsoever is provided. The infamous Dual-EC-DRGB story legitimates the concerns many specialists have about the use of arbitrary choices.
+</p>
+<blockquote class="blockquote blockquote-reverse">
+  <p class="m-b-0">I no longer trust the constants.</p>
+  <footer class="blockquote-footer">Bruce Schneier in a comment of
+    <a href="https://www.schneier.com/blog/archives/2013/09/the_nsa_is_brea.html#c1675929" title="Schneier Blog">
+      <cite title="Source Title">The NSA Is Breaking Most Encryption on the Internet</cite>
+    </a>
+  </footer>
+</blockquote>
+<p>
+  Of course, one should not conclude that cryptographic algorithms using similar constants are systematically insecure (certainly, some designers are honest!) and we will not dispute the right to trust those algorithms. Yet, in the perspective of eventually obtaining a legitimately trusted cryptographic algorithm by everybody, we believe that every future standard should <strong>rule out</strong> any cryptographic design involving arbitrary choices.
+</p>
+<p class="lead" id="choose_security">
+  Choosing <strong>security</strong> and inspiring <strong>public trust</strong> above all.
+</p>
+<p>
+  The generation of elliptic curve parameters can be split into several parts:
+  <ul>
+    <li>
+      The <strong>design</strong>: this part specifies and commits on all the security criteria the curve shall meet, on the implied parameter space, and on a deterministic procedure which, given an input
+      <var>seed</var>, outputs elliptic curve parameters guaranteed to follow the aforementioned security criteria.
+    </li>
+    <li>
+      The <strong>randomness extractor</strong>: this part specifies the entropy source, as well as <em>how</em> and <em>when</em> the entropy shall be extracted from it;
+    </li>
+    <li>
+      The <strong>seed generation</strong>: this part computes the
+      <var>seed</var> from the extracted entropy;
+    </li>
+    <li>
+      The <strong>instantiation</strong>: this part generates the parameters using the aforementioned
+      <var>seed</var> and deterministic procedure.
+    </li>
+  </ul>
+</p>
+<p>
+  Any choice of elliptic curve parameters should be performed in a justifiable, systematic, and comprehensive way. In addition to providing an algorithmic description on paper, we believe that one should also provide readable and executable <em>code</em>, and use an <em>unimpeachable and publicly-verifiable</em> entropy source.
+  <!-- This is why we are choosing security and public trust above all. -->
+</p>
+<div class="media">
+  <a class="media-left" href="{{ site.url_paper_relative | prepend: site.baseurl }}" title="Trap Me If You Can">
+    <img class="img-circle" src="{{ "images/technical_paper.png" | prepend: site.baseurl }}" alt="Image Technical Paper" width="70" height="70">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">Technical paper</h4>
+    <p>In our technical paper, we describe a deterministic procedure to generate a cryptographically secure elliptic curve from a random
+      <var>seed</var>. To the best of our knowledge, any curve generated through our methodology is secure (and in particular, meets all the <a href="http://safecurves.cr.yp.to/index.html" title="SafeCurves">SafeCurves</a> criteria).</p>
+    <p><a class="btn btn-secondary" href="{{ site.url_paper_relative | prepend: site.baseurl }}" role="button">Get the full paper&nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></a></p>
+  </div>
+</div>
+<div class="media">
+  <a class="media-left" href="{{ site.url_source_code }}" title="Source Code">
+    <img class="img-circle" src="{{ "images/source_code.png" | prepend: site.baseurl }}" alt="Image Source Code" width="70" height="70">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">Source code</h4>
+    <p>In addition to the technical paper, we publish and commit on the source code implementing our whole methodology, i.e. both the seed extraction algorithm and the elliptic curve parameters generation procedure.</p>
+    <p><a class="btn btn-secondary" href="#source" role="button">Get more details &raquo;</a></p>
+  </div>
+</div>
+<div class="media">
+  <a class="media-left" href="#lotteries" title="Lotteries">
+    <img class="img-circle" src="{{ "images/boule.png" | prepend: site.baseurl }}" alt="Image Lotteries" width="70" height="70">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">Unimpeachable entropy source</h4>
+    <p>By carefully selecting and combining many <em>future</em> lottery draws, we obtain an unpredictable, unbiased, publicly observable, and archived entropy source, that is easily verifiable in the future.</p>
+    <p>Nobody can predict what
+      <var>seed</var> will be produced by those draws, even us!</p>
+    <p><a class="btn btn-secondary" href="#lotteries" role="button">Go to a list of lotteries &raquo;</a></p>
+  </div>
+</div>
+<p class="lead" id="themdc">
+  The <strong>Million Dollar Curve</strong>.
+</p>
+<p>
+  On this website, we use the methodology described in our technical paper to generate an elliptic curve, that we call the <em>Million Dollar Curve</em>, as an alternative to curves P-256 and Curve25519 for the ECDH cryptosystem.
+</p>
+<p>
+  More precisely, we provide a <a href="#tutorial" title="Tutorial: The Three Cents Curve">tutorial</a> that describes the whole process of generating an elliptic curve called the <em>Three Cents Curve</em> based on lottery draws from October 2015. Our methodology will then be fully instantiated to generate the <a href="#mdc" title="Million Dollar Curve"><em>Million Dollar Curve</em></a>: we will commit on the design and the list of draws in January 2016, and the curve <strong>MDC201601</strong> (Million Dollar Curve of January 2016) will be generated using lottery draws from February 2016.
+</p>
+<p>
+  In order for the <em>Million Dollar Curve</em> to inspire confidence to the greatest number, we want to integrate comments we receive in the methodology before committing on the methodology and the entropy source we will use. Please drop us an <a title="Email" data-mdc-mt="curves">email</a> and we will gladly listen.
+</p>

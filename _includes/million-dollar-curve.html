@@ -1,0 +1,107 @@
+<p class="lead" id="mdc-intro">
+  Introducing the <em>Million Dollar Curve</em>
+</p>
+<p>
+  The <em>Million Dollar Curve</em> will be an alternative to curves P-256 and Curve 25519 to instantiate the ECDH cryptosystem, and will be produced in February 2016. This 128-bit secure elliptic curve is to be generated following the full methodology described in the technical paper and demonstrated in the <a href="{{ " #tutorial " | prepend: site.baseurl }}" title="Tutorial">tutorial</a> to generate the Three Cents Curve. In particular, by committing publicly on the (deterministic) process and the list of draws <em>before</em> they actually happen, our methodology is designed so that nobody (even us!) can put a trap in the Million Dollar Curve.
+</p>
+<div class="alert alert-info">
+  <p>
+    Our objective is for the <em>Million Dollar Curve</em> to inspire confidence to the greatest number. In that sense, we want to integrate comments we receive in the methodology before committing on the final methodology, final source code and the lottery draws we will use.
+  </p>
+  <p>
+    You can direct any comment you have to us and we will gladly listen. <a class="btn btn-primary-outline btn-sm" data-mdc-mt="curves">Email us!</a>
+  </p>
+</div>
+<p>
+  In what follows, we describe how we will generate the MDC201601 Curve (Million Dollar Curve of January 2016).
+</p>
+<p>Our methodology can easily be adapted (and reproducible by anyone) for new curves with possibly different specifications (e.g. not an Edwards curve or aiming at 256 bits of security), and of course new lottery draws.
+</p>
+<p>
+  We will likely generate new Million Dollar Curves in the future on this website as needed.
+</p>
+<p class="lead" id="mdc-timeline">
+  <strong>Timeline</strong> to generate the MDC201601 Curve
+</p>
+<ul class="timeline">
+  <li>
+    <div class="timeline-badge primary"><i class="fa fa-comments-o"></i></div>
+    <div class="card timeline-card">
+      <div class="card-header">
+        <strong>Phase I</strong>: Before January 25th 2016 <span class="label label-primary">Current phase</span>
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">Receiving comments on our methodology</h4>
+        <p class="card-text">In order for the Million Dollar Curve to win its spur, we greatly welcome any comment to improve the methodology we propose.</p>
+        <a class="btn btn-primary" data-mdc-mt="curves">Email us!</a>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="timeline-badge"><i class="fa fa-lock"></i></div>
+    <div class="card timeline-card">
+      <div class="card-header">
+        <strong>Phase II</strong>: January 27th 2016 <span class="label label-default">Waiting</span>
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">Commitment on the design to generate MDC201601</h4>
+        <p class="card-text">On January 27th 2016, we will present a full document (a text file) that describes the generation of Million Dollar Curve of January 2016 (named MDC201601), the list of security criteria we consider, and the acceptable set of parameters.</p>
+        <p class="card-text">The commit on the design (i.e. on the text file) will consist of:
+          <ul>
+            <li>A <a href="https://letsencrypt.org/" title="Let's Encrypt">Let's Encrypt</a> (U.S.) certificate for a subdomain of the form
+              <pre class="pre-small">MDC201601.SHA256.[xxx].cryptoexperts.com</pre> where <code>[xxx]</code> represents the SHA-256 sum of the aforementioned file split by dots every 16 characters.</li>
+            <li>A tweet on <a href="https://twitter.com/CryptoExperts" title="@CryptoExperts">CryptoExperts' Twitter profile</a> (U.S.).</li>
+            <li>The publication of the text file on CryptoExperts' <a href="https://github.com/CryptoExperts/million-dollar-curve" title="Github Million Dollar Curve">Github million-dollar-curve directory</a> (U.S.) and <a href="https://bitbucket.org/CryptoExperts/million-dollar-curve" title="Bitbucket Million Dollar Curve">Bitbucket million-dollar-curve directory</a> (Aus).</li>
+            <li>A video displaying the SHA-256 and SHA-512 of the text file in <a href="http://www.dailymotion.com/" title="CryptoExperts DailyMotion">DailyMotion</a> (FR).</li>
+            <li>A recording of Siri while reading every hexadecimal character of the SHA256 and of the SHA512 of the text file published on <a href="https://soundcloud.com/">SoundCloud</a> (DE).</li>
+            <li>An image of the handwritten SHA-256 and SHA-512 of the text file on <a href="https://www.flickr.com/" title="Flickr">Flickr</a> (U.S.).</li>
+            <li>A note in the <a href="https://eprint.iacr.org/" title="ePrint">Cryptology ePrint Archive</a> of the technical paper containing the SHA-256 of the text file</li>
+            <li>A hash from the hash chain service <a href="http://truetimestamp.org/" title="TrueTimeStamp">TrueTimeStamp</a>.</li>
+            <li>Timestamps from the digital notaries <a href="http://virtual-notary.org/" title="Virtual Notary">Virtual-Notary</a> and <a href="https://www.startssl.com/" title="StartSSL">StartSSL</a>.</li>
+            <li>Timestamp on the Bitcoin blockchain from <a href="https://www.btproof.com/" title="BTProof">BTProof</a>.</li>
+          </ul>
+          and the full list will be made public on this website.
+        </p>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="timeline-badge"><i class="fa fa-lock"></i></div>
+    <div class="card timeline-card">
+      <div class="card-header">
+        <strong>Phase III</strong>: January 29th 2016 <span class="label label-default">Waiting</span>
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">Commitment on the list of draws to consider in February 2016</h4>
+        <p class="card-text">On January 29th 2016, we commit on a text file containing a list of future draws (starting on February 1st, 2016), a clear pointer to the aforementioned design (Phase II), and a source code that deterministically computes the seed from the listed draws.</p>
+        <p class="card-text">The commit on the resulting text file will consist of the same means as for the commit on the design (Phase II).</p>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="timeline-badge"><i class="fa fa-spinner"></i></div>
+    <div class="card timeline-card">
+      <div class="card-header">
+        <strong>Phase IV</strong>: February 1st - February 13rd 2016 <span class="label label-default">Waiting</span>
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">Lottery Draws</h4>
+        <p class="card-text">During this period, the draws on which we committed on in Phase III should take place, and the full list of result will be gathered.</p>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="timeline-badge"><i class="fa fa-gears"></i></div>
+    <div class="card timeline-card">
+      <div class="card-header">
+        <strong>Phase V</strong>: February 14th 2016 <span class="label label-default">Waiting</span>
+      </div>
+      <div class="card-block">
+        <h4 class="card-title">Curve generation</h4>
+        <p class="card-text">On February 14th 2016, all the draws committed on will have (or will not have) took place, and the full list of results will be made public.</p>
+        <p class="card-text">Using the source code committed on in Phase III, we will generate the seed from the full list of results.</p>
+        <p class="card-text">Using the source code committed on in Phase II and the aforementioned seed, we will generate the MDC201601 curve, and update this website accordingly.</p>
+      </div>
+    </div>
+  </li>
+</ul>

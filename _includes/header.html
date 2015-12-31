@@ -1,0 +1,29 @@
+<section class="jumbotron" id="top">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-lg-9">
+        <h2 class="display-3">{{ site.title }}</h2>
+        <p class="lead">{{ site.description }}</p>
+        <hr class="m-y-2">
+        <p>
+          Time has come to get rid of arbitrary choices.
+        </p>
+        <p>
+          By using publicly verifiable randomness produced in February 2016 by <em>many national lotteries</em> from all around the world, we propose to generate a cryptographically secure elliptic curve for the ECDH cryptosystem as an alternative to the NIST P-256 and the Curve25519 curves.
+        </p>
+        <p>
+          It is designed so that nobody (even us!) can put a trap in it.
+        </p>
+        <p>
+          <a href="{{ site.url_paper_relative | prepend: site.baseurl }}" class="btn btn-primary">Get the full paper&nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></a>
+          <a href="{{ "#source" | prepend: site.baseurl }}" class="btn btn-secondary">Get the source code &raquo;</a>
+        </p>
+      </div>
+      <div class="col-lg-3 hidden-md-down">
+        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1" viewBox="-20 0 4200 5595" xmlns:xlink="http://www.w3.org/1999/xlink" style="max-height:300px">
+          <path id="hero-curve" style="stroke-width:100; stroke-linecap:round; stroke-linejoin:round; fill:none;" d="M4196 35c-75,234 -976,1751 -1514,1720 -489,-28 -1012,-567 -1631,-567 -619,0 -1022,684 -1017,1654 5,947 485,1651 1012,1631 604,-23 1104,-497 1640,-553 633,-66 1453,1546 1490,1640" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
