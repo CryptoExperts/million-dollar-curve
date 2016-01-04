@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  {% include head.html %}
+
+  <body data-spy="scroll" data-target=".navigator" data-offset="30">
+    {% include header.html %}
+    <div class="container">
+      <div class="row">
+	<div class="col-xs-12 col-md-9">
+          {{ content }}
+	</div>
+      </div>
+    </div>
+    {% include footer.html %}
+    {% include footer-scripts.html %}
+  </body>
+
+</html>
