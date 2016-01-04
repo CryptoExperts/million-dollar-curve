@@ -258,3 +258,23 @@ ul.timeline > li > .timeline-card:after {
 .card {
   overflow: auto;
 }
+
+ul.faqul {
+  list-style-type: none;
+}
+
+ul.faqul li {
+  position: relative;
+}
+
+ul.faqul li:before {
+  content: attr(data-number);
+  position: absolute;
+  display: block;
+  left: -2.5rem;
+  top: 0.5rem;
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: bold;
+  color: #ddd;
+}
