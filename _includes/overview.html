@@ -2,7 +2,7 @@
   Today most of elliptic-curve cryptography relies on the same set of curves: ANSSI FRP256v1, NIST P-256, NIST P-384, Curve25519, secp256k1, brainpoolP256t1, Curve1174 and a few others.
 </p>
 <p>
-  However, most of these curves parameters generation processes contain unjustified choices, specific constants or specific hash algorithms. Examples include the NIST P256 curve, whose parameters are derived from an unjustified seed (<em>C49D3608 86E70493 6A6678E1 139D26B7 819F7E90</em>), and the ANSSI FRP256v1 curve, for which no justification whatsoever is provided. The infamous <a href="https://en.wikipedia.org/wiki/Dual_EC_DRBG">Dual-EC-DRGB</a> story legitimates the concerns many specialists have about the use of arbitrary choices.
+  However, several of these curves parameters generation processes contain unjustified choices, specific constants or specific hash algorithms. Examples include the NIST P256 curve, whose parameters are derived from an unjustified seed (<em>C49D3608 86E70493 6A6678E1 139D26B7 819F7E90</em>), and the ANSSI FRP256v1 curve, for which no justification whatsoever is provided. The infamous <a href="https://en.wikipedia.org/wiki/Dual_EC_DRBG">Dual-EC-DRGB</a> story legitimates the concerns many specialists have about the use of arbitrary choices.
 </p>
 <blockquote class="blockquote blockquote-reverse">
   <p class="m-b-0">I no longer trust the constants.</p>
