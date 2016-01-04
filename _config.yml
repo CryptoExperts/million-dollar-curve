@@ -1,7 +1,7 @@
 # Site settings
 title: Million Dollar Curve
 email: curves@cryptoexperts.com
-description: At last an elliptic curve everyone can trust.
+description: An elliptic curve everyone can trust.
 baseurl: "/million-dollar-curve/" # the subpath of your site, e.g. /blog/
 url: "http://cryptoexperts.github.io" # the base hostname & protocol for your site
 twitter_username: CryptoExperts
