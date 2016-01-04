@@ -1,0 +1,69 @@
+<p>Since the publication of this project, we have received many questions and saw many reactions on, e.g., Twitter. We
+  plan to answer most of them on this webpage. To benefit from our answers, we recommend you read the <a href="{{ site.url_paper_relative | prepend: site.baseurl }}">technical paper</a>.</p>
+
+<ul class="faqul">
+  <li id="faq_01" data-number="1">
+    <div class="card card-block">
+      <h4 class="card-title">Is <em>Million Dollar Curve</em> nothing more than "yet another safe curve"?</h4>
+      <p class="card-text">Yes and no.</p>
+      <p class="card-text">The <em>Million Dollar Curve</em> in itself is just another safe curve, but it is generated using a novel process. This process is detailed in our <a href="{{ site.url_paper_relative | prepend: site.baseurl }}">technical paper</a> and allows to generate parameters everyone can trust for new cryptosystem standards, but also in any other situation requiring verifiable randomness.</p>
+    </div>
+  </li>
+  <li id="faq_02" data-number="2">
+    <div class="card card-block">
+      <h4 class="card-title">Is there anything wrong with Curve25519?</h4>
+      <p class="card-text">No.</p>
+      <p class="card-text">We, at <a href="https://www.cryptoexperts.com">CryptoExperts</a>, actually use Curve25519 and recommend it to our partners. Yet, we think that people should not rely on the same few safe curves that are currently out. Our methodology allows to easily produce safe alternatives.</p>
+    </div>
+  </li>
+  <li id="faq_03" data-number="3">
+    <div class="card card-block">
+      <h4 class="card-title">Curve25519 vs. Million Dollar Curve</h4>
+      <p class="card-text">Curve22519 was designed to be as fast as possible, with no security compromise. This is both a strength and a potential weakness:
+	<ul>
+	  <li>a strength because it gives a valid argument that no trapdoor was introduced in the design,</li>
+	  <li>a potential weakness because Curve25519 uses a very specific prime field. As of now, no attack exploiting this specificity is known.</li>
+	</ul>
+      </p>
+      <p class="card-text">For applications where speed is paramount, Curve25519 is probably the best option. But for most applications, where loosing a little on the efficiency side is "not a big deal", Million Dollar Curve is probably the safest choice.</p>
+      <p class="card-text">See also the <a href="http://crypto.stackexchange.com/a/31654 ">answer</a> by <a href="http://crypto.stackexchange.com/users/15312/ruggero">Ruggero</a> on Stack Exchange.
+    </div>
+  </li>
+  <li id="faq_04" data-number="4">
+    <div class="card card-block">
+      <h4 class="card-title">What if a government agency rigs a few lotteries?</h4>
+      <p class="card-text">This is not an issue.</p>
+      <p class="card-text">Our parameter generation process was specifically designed to avoid this kind of problem. As explained in Section&nbsp;4.4 of our <a href="{{ site.url_paper_relative | prepend: site.baseurl }}">technical paper</a>, in order to manipulate the parameter generation, an adversary has to rig <em>all</em> the last lottery draws (what we call the "Last draw attack"). We mitigate this risk by relying on independent lotteries from various countries around the world.</p>
+    </div>
+  </li>
+  <li id="faq_05" data-number="5">
+    <div class="card card-block">
+      <h4 class="card-title">Do you really think that national lotteries are unimpeachable?</h4>
+      <p class="card-text">Yes and no.</p>
+      <p class="card-text">Most national lotteries follow a strict protocol which is specifically designed to avoid
+	manipulations (certified drawing machines, supervision of a bailiff, legal process, etc.). It is pretty obvious
+	that in the past some lotteries have been manipulated, but manipulations with financial motive are not a concern for us (at
+	most, a few bits of entropy are lost). Besides, as explained in the <a href="#faq_04">previous answer</a>, an adversary would have to manipulate <em>all</em> the last lottery draws.</p>
+    </div>
+  </li>
+  <li id="faq_06" data-number="6">
+    <div class="card card-block">
+      <h4 class="card-title">How can I verify the parameters if a lottery archive is no longer available?</h4>
+      <p class="card-text">These archives are usually duplicated in several places over the Internet or sometimes printed in newspapers. If at a given time in the future the result of a drawing becomes <em>completely</em> unavailable, verification will become impossible.</p>
+      <p class="card-text">However, the lotteries that have been selected are well established and will most certainly continue to exist for some time. During this period, everyone will be able to fully verify/re-generate the <em>Million Dollar Curve</em>, which in itself is a convincing argument for later use.</p>
+    </div>
+  </li>
+  <li id="faq_07" data-number="7">
+    <div class="card card-block">
+      <h4 class="card-title">I have never heard about half of these lotteries, how do I even know they are real?</h4>
+      <p class="card-text">You can probably verify that lotteries from your own country actually exist: you might even have played them before hearing about <em>Million Dollar Curve</em>. Your friends in Mauritius, Canada, and New Zealand can certainly confirm the same thing.</p>
+      <p class="card-text">Besides, lotteries are such popular games that "faking" one in a convincing way is probably impossible without being noticed at some point.</p>
+    </div>
+  </li>
+  <li id="faq_08" data-number="8">
+    <div class="card card-block">
+      <h4 class="card-title">What if a lottery does not perform the expected draws during Phase IV of the generation process?</h4>
+      <p class="card-text">This situation is already taken into account in our generation process and the scripts we provide, so this is not a problem. The missing draws are simply ignored (see, for example, section <code>How to treat missing draws</code> in <a href="{{ "specifications/three_cents_curve/2015_09_three_cents_curve_standardization.txt" | prepend: site.baseurl }}">2015_09_three_cents_curve_standardization.txt</a>)</p>
+    </div>
+  </li>
+</ul>
