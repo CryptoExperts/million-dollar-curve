@@ -13,7 +13,7 @@
   </p>
 </div>
 <p>
-  In what follows, we describe how we will generate the MDC201601 Curve (Million Dollar Curve of January 2016).
+  In what follows, we describe how we will generate the MDCurve201601 Curve (Million Dollar Curve of January 2016).
 </p>
 <p>Our methodology can easily be adapted (and reproducible by anyone) for new curves with possibly different specifications (e.g. not an Edwards curve or aiming at 256 bits of security), and of course new lottery draws.
 </p>
@@ -21,14 +21,14 @@
   We will likely generate new Million Dollar Curves in the future on this website as needed.
 </p>
 <p class="lead" id="mdc-timeline">
-  <strong>Timeline</strong> to generate the MDC201601 Curve
+  <strong>Timeline</strong> to generate the MDCurve201601 Curve
 </p>
 <ul class="timeline">
   <li>
     <div class="timeline-badge primary"><i class="fa fa-comments-o"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase I</strong>: Before January 25th 2016 <span class="label label-primary">Current phase</span>
+        <strong>Phase I</strong>: Before January 25th 2016 <span class="label label-success">Done!</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Receiving comments on our methodology</h4>
@@ -38,29 +38,52 @@
     </div>
   </li>
   <li>
-    <div class="timeline-badge"><i class="fa fa-lock"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-lock"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase II</strong>: January 27th 2016 <span class="label label-default">Waiting</span>
+        <strong>Phase II</strong>: January 27th 2016 <span class="label label-primary">Current Phase</span>
       </div>
       <div class="card-block">
-        <h4 class="card-title">Commitment on the design to generate MDC201601</h4>
-        <p class="card-text">On January 27th 2016, we will present a full document (a text file) that describes the generation of Million Dollar Curve of January 2016 (named MDC201601), the list of security criteria we consider, and the acceptable set of parameters.</p>
-        <p class="card-text">The commit on the design (i.e. on the text file) will consist of:
-          <ul>
-            <li>A <a href="https://letsencrypt.org/" title="Let's Encrypt">Let's Encrypt</a> (U.S.) certificate for a subdomain of the form
-              <pre class="pre-small">MDC201601.SHA256.[xxx].cryptoexperts.com</pre> where <code>[xxx]</code> represents the SHA-256 sum of the aforementioned file split by dots every 16 characters.</li>
-            <li>A tweet on <a href="https://twitter.com/CryptoExperts" title="@CryptoExperts">CryptoExperts' Twitter profile</a> (U.S.).</li>
-            <li>The publication of the text file on CryptoExperts' <a href="https://github.com/CryptoExperts/million-dollar-curve" title="Github Million Dollar Curve">Github million-dollar-curve directory</a> (U.S.) and <a href="https://bitbucket.org/CryptoExperts/million-dollar-curve" title="Bitbucket Million Dollar Curve">Bitbucket million-dollar-curve directory</a> (Aus).</li>
-            <li>A video displaying the SHA-256 and SHA-512 of the text file in <a href="http://www.dailymotion.com/" title="CryptoExperts DailyMotion">DailyMotion</a> (FR).</li>
-            <li>A recording of Siri while reading every hexadecimal character of the SHA256 and of the SHA512 of the text file published on <a href="https://soundcloud.com/">SoundCloud</a> (DE).</li>
-            <li>An image of the handwritten SHA-256 and SHA-512 of the text file on <a href="https://www.flickr.com/" title="Flickr">Flickr</a> (U.S.).</li>
-            <li>A note in the <a href="https://eprint.iacr.org/" title="ePrint">Cryptology ePrint Archive</a> of the technical paper containing the SHA-256 of the text file</li>
-            <li>A hash from the hash chain service <a href="http://truetimestamp.org/" title="TrueTimeStamp">TrueTimeStamp</a>.</li>
-            <li>Timestamps from the digital notaries <a href="http://virtual-notary.org/" title="Virtual Notary">Virtual-Notary</a> and <a href="https://www.startssl.com/" title="StartSSL">StartSSL</a>.</li>
-            <li>Timestamp on the Bitcoin blockchain from <a href="https://www.btproof.com/" title="BTProof">BTProof</a>.</li>
-          </ul>
-          and the full list will be made public on this website.
+        <h4 class="card-title">Commitment on the design to generate MDCurve201601</h4>
+        <p class="card-text">On January 27th 2016, we presented a full document (a text file) that describes the generation of Million Dollar Curve of January 2016 (named MDCurve201601), the list of security criteria we consider, and the acceptable set of parameters.</p>
+	<p class="card-text">This design text file can be downloaded here: <a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/2016_01_27_million_dollar_curve.txt" | prepend: site.baseurl }}">2016_01_27_million_dollar_curve.txt</a></p>
+	<p>The SHA256 hash of this file is</p>
+	<figure class="highlight">
+          <pre>e9dd4baf0d351b5a64c59ed6b1efd3108094b3585e17a0e5350fb200500058d9</pre>
+	</figure>
+        <p class="card-text">We commited on this design text file in the following ways:
+
+	  
+	  <ul>
+	    <li>
+	      We created a <a href="https://letsencrypt.org/" title="Let's Encrypt">Let's Encrypt</a> (U.S.) certificate for the subdomain
+	      <pre class="pre-small">mdcurve.design.201601.sha256.e9dd4baf0d351b5a.64c59ed6b1efd310.8094b3585e17a0e5.350fb200500058d9.cryptoexperts.com</pre>
+	      where one can see the SHA256 hash of the design text file. The certificate can be consulted/validated by
+	      visiting the following url:
+	      <pre><a href="https://mdcurve.design.201601.sha256.e9dd4baf0d351b5a.64c59ed6b1efd310.8094b3585e17a0e5.350fb200500058d9.cryptoexperts.com">https://mdcurve.design.201601.sha256.e9dd4baf0d351b5a.64c59ed6b1efd310.8094b3585e17a0e5.350fb200500058d9.cryptoexperts.com</a></pre>
+	      The certificate can also be dowloaded here: <a href="{{ "specifications/mdcurve_201601/mdcurve.design.201601.crt" | prepend: site.baseurl }}">mdcurve.design.201601.crt</a>
+	      The certificate is also archived on <a href="https://crt.sh/?id=12299007">crt.sh</a> (you can look for <code>X509v3 Subject Alternative Name</code>).
+	    </li>
+
+	    <li>
+	      We have uploaded a sound file on SoundCloud (DE). Check out the song 2016_01_27_million_dollar_curve on <a href="https://soundcloud.com/cryptoexperts">CryptoExperts' SoundCloud page</a>.
+	    </li>
+	    <li>
+	      We have uploaded a picture of a handwritten version of the SHA256 hash of the design text file on 500px (U.S.). Check it out on <a href="https://500px.com/cryptoexperts">CryptoExperts' profile</a>.
+	    </li>
+            <li>We published the design text file on CryptoExperts' <a href="https://github.com/CryptoExperts/million-dollar-curve" title="Github Million Dollar Curve">Github million-dollar-curve directory</a> (U.S.) and the SHA256 hashes of both the design text file and the Let's Encrypt certificate on the <a href="https://bitbucket.org/CryptoExperts/million-dollar-curve" title="Bitbucket Million Dollar Curve">Bitbucket million-dollar-curve directory</a> (Aus).</li>
+	    <li>We published a video showing the SHA256 of the design text file on Dailymotion (FR). You can watch it on <a href="http://www.dailymotion.com/cryptoexperts">CryptoExperts' Dailymotion page</a>.</li>
+	    <li>We used the <a href="http://truetimestamp.org">TrueTimeStamp</a> service to have the design text file included in their sequence of fingerprints. The certificate we obtained is here: <a href="{{ "specifications/mdcurve_201601/TrueTimeStamp-certificate-1497.txt" | prepend: site.baseurl }}">TrueTimeStamp-certificate-1497.txt</a>. One can easily check that the SHA256 hash of the file was timestamped on January 27, 2016 3:49:54 pm UTC.</li>
+	    <li>
+	      We obtained a certificate from <a href="http://virtual-notary.org/">Virtual-Notary</a> (U.S.). This certificate can be downloaded here: <a href="{{ "specifications/mdcurve_201601/virtual-notary-cert-document-644891.p12" | prepend: site.baseurl }}">virtual-notary-cert-document-644891.p12</a>. One can easily check that the SHA256 hash of the file was timestamped on Wednesday January 27, 2016 11:04.37 EST (UTC-0500). 
+	    </li>
+	    <li>
+	      We created a "trusted timestamp" with <a href="https://www.btproof.com/" title="BTProof">BTProof</a>. At the time of writing, the SHA256 of the design text file has not yet been seen on the blockchain.
+	    </li>
+	    <li>
+	      We create a new revision of the technical paper on the IACR Cryptology ePrint Archive (International). We added a note to this revision, with the SHA256 of the design text file. You can retrieve this version at <a href="https://eprint.iacr.org/2015/1249/20160127:164115">https://eprint.iacr.org/2015/1249/20160127:164115</a>.	      
+	    </li>
+	  </ul>
         </p>
       </div>
     </div>
@@ -82,7 +105,7 @@
     <div class="timeline-badge"><i class="fa fa-spinner"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase IV</strong>: February 1st - February 13rd 2016 <span class="label label-default">Waiting</span>
+        <strong>Phase IV</strong>: February 1st - February 14th 2016 <span class="label label-default">Waiting</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Lottery Draws</h4>
@@ -94,13 +117,13 @@
     <div class="timeline-badge"><i class="fa fa-gears"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase V</strong>: February 14th 2016 <span class="label label-default">Waiting</span>
+        <strong>Phase V</strong>: After February 14th 2016 <span class="label label-default">Waiting</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Curve generation</h4>
-        <p class="card-text">On February 14th 2016, all the draws committed on will have (or will not have) took place, and the full list of results will be made public.</p>
+        <p class="card-text">On February 14th 2016, all the draws committed on will have (or will not have) taken place, and the full list of results will be made public.</p>
         <p class="card-text">Using the source code committed on in Phase III, we will generate the seed from the full list of results.</p>
-        <p class="card-text">Using the source code committed on in Phase II and the aforementioned seed, we will generate the MDC201601 curve, and update this website accordingly.</p>
+        <p class="card-text">Using the source code committed on in Phase II and the aforementioned seed, we will generate the MDCurve201601 curve, and update this website accordingly.</p>
       </div>
     </div>
   </li>

@@ -1,0 +1,1207 @@
+# Description
+
+This file specifies the "Design" of the Million Dollar Curve cryptosystem, in the sense of [1].
+
+See https://cryptoexperts.github.io/million-dollar-curve
+
+# Authors
+
+CryptoExperts
+
+
+# Date
+
+27th of January, 2016
+
+
+# Contact
+
+curves@cryptoexperts.com
+
+
+# The Cryptosystem
+
+An elliptic curve in Edwards form E:
+
+x^2 + y^2 = 1 + d x^2 y^2
+
+over a prime field Fp, together with a point (x,y) on this curve that shall generate a large subgroup.
+
+
+# The Security Criteria
+
+(1) p must be a 256 bit prime (so that 2^{255} <= p < 2^{256})
+
+(2) The parameter d of the Edwards curve must not be a square in Fp.
+
+(3) The number of point #E(Fp) of must be of the form 4q, where q is prime.
+
+(4) The base point (x,y) must generate a subgroup of order q.
+
+(5) The embedding degree m of the curve must verify m > (q-1)/100.
+
+(6) The CM field discriminant D of the curve must verify |D| \ge 2^{100}.
+
+(7) The curve must be twist secure, i.e., the constraints (3) and (5) must also hold for the twist of E.
+
+
+# How to turn a seed into specific parameters for the Cryptosystem, such that all the security criteria are met
+
+The source code we provide is made of 3 scripts written in Python 3 (note that Python 2.7 is still the default Python
+version on many systems and will not work) that should be executed sequentially (the source code of which is provided at
+the bottom of this file):
+
+- 02_generate_bbs_parameters.py
+
+- 03_generate_prime_field_using_bbs.py
+
+- 04_generate_curve_using_bbs.py
+
+In the remaining of this section, we explain how to use these script to generate a cryptosystem meeting all the above
+security criteria.
+
+The first script takes as an input a JSON file specifying the seed and its upper-bound (it is assumed
+that the lower-bound for the seed is 0). The variable names are "seed" and "seed_upper_bound" respectively, and the
+values will be treated as integers. The seed upper bound will allow the script to evaluate the quantity of entropy
+provided by the seed, assuming that it was drawn uniformly at random.
+
+-----BEGIN EXAMPLE INPUT JSON FILE TO 02_generate_bbs_parameters.py (in_02.json)-----
+{"approx_seed_entropy": 8230, "lone_bits": 30, "seed": 3172874207877520252416763680361544477233394035120383681713580334538033579891404152922060925973099336186049914682287113419806398529758284286558511972767237992514234644375749955502140201010949042378725809475163706286234597892462010802708128133281451682644478946114588494346165032017947286379198115657054029810164975597143279802983246365157921903215450349499189111006009642342648931398052034425394535546923791380543226928276207766285520668152791660299899293633317501044879349078088325643768936349865742450221414808206569572975827479427331003042862528216187622016047239017503696047861393728151565773644314507279873671833087799743246027353574216154963337751194695557021376356978426427078005427465518082758443290263439690192322766558530957214504021616469691704084821834807386842304504894781832208512580920724951133015007438101405891218996636359196569864728949925503415028917827407121102487598201047526895781897827107184132020123399321615433961465207948276549502585890139925431480419153323034813904376049132630422548020705922097709972058079263290240722778208120317959422252612375780194742488093127245962071522822439916582165413547509583925170346178824119301855678942834442045543176231458487067761839943167715275208493653855239576289709546852481834412849176822261951272408306530714119787111691395135329166344584114001112769530298495965396103271488132020612734168191911737912933550826368511645934835215030365721792189093297389990715217403263972710669488508368816794016706862645759968160793466973234273676672674008982085933434168126091608467498147328466253771861373520180731382015057714490812861415342417903190111575730334683782492046885467674479419619350392145134360222656785488011054894663983112830935176813786578498597400921780739563644951931264136770355648971516701189130253593328171696012973779263150017132784698193199102286158312729253073733574599747809449953071704224403889018772978250468556244531175445314255242938505142329990605493536677009570234470482632816845732046454222698935320835142453707181079613188472410202148587993957074569898556723278959679081320871556857322928266003833926105230285887720606560663003733466603822923445604273743383045535048312663413019546868146076057974177851871522703768133253523139648762911197426099589088621380146145593751754820125206283356416377946300091077020350400243715434791177266797660085432192503464507332301714402817268401082548513981678320102636200094836464285252880214483185044412164097386523463667624033412024421965757680002285293648872, "seed_upper_bound": 425327197210355129340539456968458384373445524176159032492171667219788879936136863063066217445044391279946418327296424318672854470361946866454694121498590531906030649752930778686875027612309426649286079811274440168407916819560916528496570122458275809392026384797319808221354670630609166378596299322280677097475065967171148461164404731228160002154976566857476435990359708471423745718490134174336145925213076597595671368951325750758567777039565402811517175996074051735441989651970434413983850342456427425527511883211981178895758239369906984056341582502509561309388450374404335066922581754888242358285392286990116467962245359429553465286432926018439859695411219754116544746896167749043900255825790669357255015263108811254415308144711367147538845738232081530780772599012196295717462027778703309397088614461933790978064382217771283118118239402304091618065745489174424533261820319582406137515581949615636033710521142372899071628319821838435728200479733923290703241536218668773091501239999757997412889393263121347287116244864237683877765343925969529665328489157516509578387772310774612443632145688176606508957430883471235041756769659342365014519784500803191180607641401082644307985966750524855903138636039811506913721338717460135932715203133410118426886285751937564671036505412118678483060499598020277183319159939054942063603542652012569835229053719210080663179721841663789475196322648208999348582395781821740200622579686620012977461197852559630208151743801833412041126395836698802965318433597108468217326090046820124995927515510100849477244920329900171763139550432809779476848525077534185141406022224473108749637024187591515054388460697948924230308262225552225673668187600275753094884786169389634077582878233432655843023377771907565396629677063394177289474214045999973075400424339856526490709896843920618490503762056222578893726940413348487375785378706726424671208599858027339528130220264994740745294260792905286744293428115101172669925572338747255047268851214599811721747563063217124562435708417479025000993073981648416498456922499854644637336311145997547535008316698716335338994972993130264382022243173574936423906655564072718587637344713763212417766642999758170159216079879811750004522413200999022105947006404566832810998323890633620871777113722527227764203888608912783346070154110532766035216437715621537247065872417927782022879824641221485647037427984172408936208098067215029749172666368000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
+-----END EXAMPLE INPUT JSON FILE TO 02_generate_bbs_parameters.py-----
+
+Naming the previous file "in_02.json", the first script should be called as follows to generate 2048-bit strong strong
+primes. Note that generating a 2048-bit strong strong prime is computationnaly heavy, so this script may take up to an
+hour to run:
+
+python3 02_generate_bbs_parameters.py in_02.json in_03.json 2048
+
+This creates the file "in_03.json" containing two strong strong primes "bbs_p" and "bbs_q" (allowing to define a
+Blum-Blum-Shub PRNG) and a starting point "bbs_s" (the order of the variables may vary in the JSON file):
+
+-----BEGIN EXAMPLE INPUT JSON FILE TO 03_generate_prime_field_using_bbs.py (in_03.json)-----
+{"bbs_p": 27696925153259597891960474817749648636980518036685415094061070195733338458916611307692612995720743573092750554578036131949661452079311166397124921018507339553693418989835493964703289512650262647713007265016834276069878418325045615996450211728271707366214694737137176074559361819881907858860032661891579343966726370303607232847439740825435771626243452931027233691221639222485576346348302836642426128178423033519256809001493621771420979591719346887987927335348766133378890289371114038349606755937765676240752208030247250711452594037122520791998838531280471662664700499966775734541206775070071428214909734732424028857639, "bbs_q": 27827714415218053612020139261505478027405403979549525645513677756758666877630301063512601199612498807576977855998186419951069948690898569003536956250416555383260167447767740871499405825243059058795155134900117647497394504799387754701811988865398690299514424724994309970978380520081925364932482802847657016533630810861370487545226983374414783472878723442941983029793304345937404586171953708799793923994708187959230230149396468894354841860587013424157015116405172939474204385556599418425083133193097732846645135079527011225144847888366500638415674064615725835699212188269674332509067467240103755281195991278951201245639, "bbs_s": 148194026255492533335423380681932294277059518248141781684930866318426670996777093315499404569171814182177490477902757900871062527195523218718552831055265368673478794414459108878780458823410900114195682682689474406269972537161859333019340600808002254928969639622573039118260421785865334356555810519556995345795928661552713169840844271675463253753751288278237779889329314566165230307611668871452931432546750902436790319252110009483192411246819927919825882029859355532586913337052483097884107608680490612939050193506773792806177263573772899975023999703740861648004828043770512936261808563791866234347741154142797181693882610537540489309090017607192789454578608108681609673042012675178344262628958834270300871003369881517366577802066280272903640579852082276124464619211909843277949681872640268252668220597490152838789632247326128313108984145996248504691499191921387063378084305179053482615639651516887237534069955045087889369360937767283841001858546690267596629731635275121579189214606028466058684929757807794221714030481402929236446729011761189971871412479968473425410336040829516676286945205269508068803422710352899570216713473179442749338298549005976052912112782290746796457936982621567449222347348168946276518736278525531863530220504}
+-----END EXAMPLE INPUT JSON FILE TO 03_generate_prime_field_using_bbs.py-----
+
+The second script should be then called as follows to generate a 256 bit prime:
+
+python3 03_generate_prime_field_using_bbs.py in_03.json in_04.json 256
+
+This creates the file "in_04.json" containing the updated state of the Blum-Blum-Shub PRNG and the 256 bit prime that
+defines the base field for the curve we will generate.
+
+-----BEGIN EXAMPLE INPUT JSON FILE TO 04_generate_curve_using_bbs.py (in_04.json)-----
+{"bbs_p": 27696925153259597891960474817749648636980518036685415094061070195733338458916611307692612995720743573092750554578036131949661452079311166397124921018507339553693418989835493964703289512650262647713007265016834276069878418325045615996450211728271707366214694737137176074559361819881907858860032661891579343966726370303607232847439740825435771626243452931027233691221639222485576346348302836642426128178423033519256809001493621771420979591719346887987927335348766133378890289371114038349606755937765676240752208030247250711452594037122520791998838531280471662664700499966775734541206775070071428214909734732424028857639, "bbs_q": 27827714415218053612020139261505478027405403979549525645513677756758666877630301063512601199612498807576977855998186419951069948690898569003536956250416555383260167447767740871499405825243059058795155134900117647497394504799387754701811988865398690299514424724994309970978380520081925364932482802847657016533630810861370487545226983374414783472878723442941983029793304345937404586171953708799793923994708187959230230149396468894354841860587013424157015116405172939474204385556599418425083133193097732846645135079527011225144847888366500638415674064615725835699212188269674332509067467240103755281195991278951201245639, "bbs_s": 558563595407978149336669862667443072575930670109702473611866209178968389743495005399526867580477905143522615903406403548541969996676438761981078807382652331317794356774651161495176390945937799220380945239431316851655299777182510154889204682018334144129325398780669792044349358857465191218013410571810391138493017120537549999203250155533625705360601628574676134916555191443876932613971549254382229840598655383879807256903377704593216529187815934520699996001945615407599247534627829796956981807675837685426363168475839327441056692248191525093214769293481134217335367200876053083145592596286334997588582814587684462095001099226432606336251131211006717010070356170649519718220873287557245534696067807256212847198164654116693116340932699362536370842413372996356329382295950793961795422070250579456454565574289186910644416097338962364290068085166770372195339895028074836706415167007447071895949004439415988861161141231857728486059979534151373744049566911528539906165585294517657208381165042754517776007156220530808931286764347850464625020049945554708005717886539663273273472857547272336524667228003985298558990419872562727121988345589705530945349537568608955802391772342666833527781879286855341880621213224783430196730382713670913741420097, "p": 95264496687460134290863994920679314580015054201519753053105324506302351623487}
+-----END EXAMPLE INPUT JSON FILE TO 04_generate_curve_using_bbs.py-----
+
+The last script takes the previous file as an input:
+
+python3 04_generate_curve_using_bbs.py in_04.json out.json
+
+This generates a file out.json containing the parameters of the cryptosystem. Note that this script takes a very long
+time to run (typically a few hours, but sometimes more than a day). This script makes use of the seadata.tgz package for
+the PARI library. This package is generally *not* installed by default with PARI. It can be manually downloaded from the
+PARI website [2]. Please closely follow the installation instructions provided on the PARI website.
+
+-----BEGIN EXAMPLE FINAL OUTPUT FILE (out.json)-----
+{"base_point_x": 78349532534849890793764896473917698832244846774985547481949597610985336039663, "base_point_y": 37064689559694237766036889489480638336604017962600194903598572527242595291708, "bbs_p": 27696925153259597891960474817749648636980518036685415094061070195733338458916611307692612995720743573092750554578036131949661452079311166397124921018507339553693418989835493964703289512650262647713007265016834276069878418325045615996450211728271707366214694737137176074559361819881907858860032661891579343966726370303607232847439740825435771626243452931027233691221639222485576346348302836642426128178423033519256809001493621771420979591719346887987927335348766133378890289371114038349606755937765676240752208030247250711452594037122520791998838531280471662664700499966775734541206775070071428214909734732424028857639, "bbs_q": 27827714415218053612020139261505478027405403979549525645513677756758666877630301063512601199612498807576977855998186419951069948690898569003536956250416555383260167447767740871499405825243059058795155134900117647497394504799387754701811988865398690299514424724994309970978380520081925364932482802847657016533630810861370487545226983374414783472878723442941983029793304345937404586171953708799793923994708187959230230149396468894354841860587013424157015116405172939474204385556599418425083133193097732846645135079527011225144847888366500638415674064615725835699212188269674332509067467240103755281195991278951201245639, "bbs_s": 484252461069487755682813250467110050042407609810379001455601638019182119768108984522857066473023597787904255476018455536699122181360261938454824281221740945254361626624959636115723401764846983654230494596293846291013024542666272950995619960401960021406268204751095149229415685137702268780542474808978982774956693022501392221834997862770016562106354828677859915743887306093804895184330766284647678375620060790353507012365733482090225820549907198362560508422343595470685282058407883119908648688107346888074115078462095016088270179997025594356120021247806761236601950212671428773888018364282849752563221530301634631312689367790438581410325515641084748024088252815770454560571184346380793759306789815497251787379639742432502720119764279440882514987013191342795143837868245270827650830379700613879595333681220686673632712851832304689303939462627531791439575940650740399125945867152192309265712493311567310228355628269948935506988515794116177228340276692609120063275940570105816949117914586300386924762426791675513584375064049835983786245389113523259286874277677500497454619045753105737705243685349104454865298655220847175667080210220863256837768336277133685758073465911456832104619484803440076126461740317338890968997149534338052907910625, "candidate_nbr": 38236, "cardinality": 95264496687460134290863994920679314580114232545221964233369089721061464211012, "cardinality_twist": 95264496687460134290863994920679314579915875857817541872841559291543239035964, "d": 33753908257543590831403714342771769139739553331516936713558188040715498123029, "discriminant": -92805410722581651270271591028397807922610702787248897699861549303956711510843, "embedding_degree": 23816124171865033572715998730169828645028558136305491058342272430265366052752, "embedding_degree_twist": 23816124171865033572715998730169828644978968964454385468210389822885809758990, "p": 95264496687460134290863994920679314580015054201519753053105324506302351623487, "trace": -99178343702211180263765214759112587524}
+-----END EXAMPLE FINAL OUTPUT FILE (out.json)-----
+
+# Python3 source code of the 3 scripts
+
+The 3 scripts were tested with the 3.4.3 version of Python [3]. They do *not* work with Python 2. They make use of
+standard libraries, as well as the gmpy2 v.2.0.7 library. The underlying version of GMP [4] we used is the 6.1.0. The
+scripts also use 4 helpers (the source of which is also provided bellow):
+
+- utils.py
+
+- bbsengine.py
+
+- subroutines.py
+
+- pari_light_interface.py
+
+The last helper is a simple interface to certain functionalities of the PARI library [2].
+
+-----BEGIN 02_generate_bbs_parameters.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import argparse
+import json
+import os
+import subroutines
+import utils
+import math
+import gmpy2
+
+def main():
+
+    # Test local versions of libraries
+
+    utils.test_python_version()
+    utils.test_gmpy2_version()
+
+    # Parse command line arguments
+    
+    parser = argparse.ArgumentParser(description="Generate BBS parameters.")
+    
+    parser.add_argument("input_file", help="""JSON file containing the seed used for generating the pseudo strong 
+                                              strong prime (the name is "seed"). The required
+                                              quantity of entropy it should contain depends on bitsize. As a rule of
+                                              thumb the seed should contain at least 4*bitsize bits of entropy.""")
+    parser.add_argument("output_file", help="""Output JSON file where this script will write the two generated strong
+                                               strong primes "p" and "q". The output file should not exist already.""")
+    parser.add_argument("min_prime_bitsize", type=int, help="minimum strong strong prime bit size (e.g. 2048).")
+    
+    args = parser.parse_args()
+
+    
+    # Check arguments
+    
+    output_file = args.output_file
+    if os.path.exists(output_file):
+        utils.exit_error("The output file '%s' already exists. Exiting."%(output_file))
+
+
+    # Declare a few important variables
+        
+    min_prime_bitsize = args.min_prime_bitsize
+
+    input_file = args.input_file
+    with open(input_file, "r") as f:
+        data = json.load(f)        
+    seed = int(data["seed"])
+    seed_upper_bound = int(data["seed_upper_bound"])
+    approx_seed_entropy = math.floor(gmpy2.log2(seed_upper_bound))
+
+    utils.colprint("Minimum strong strong prime size:", str(min_prime_bitsize))
+    utils.colprint("Approximate seed entropy:", str(approx_seed_entropy))
+
+    
+    # Precomputations
+
+    first_primes = [2]                     # List of the first primes
+    PI = 2                                 # Product of the primes in "first_primes"
+    strong_strong_integers = [[1]]         # strong_strong_integers[i] is the list of all strong strong integers modulo
+                                           # first_primes[i]
+    number_of_strong_strong_integers = [1] # number_of_strong_strong_integers[i] is the number of elements of the list
+                                           # strong_strong_integers[i]
+    C = 1                                  # Product of the elements of "number_of_strong_strong_integers"
+    
+    while not 2**(min_prime_bitsize-2) < PI:
+        p = int(gmpy2.next_prime(first_primes[-1]))
+        first_primes.append(p)
+        PI *= p
+        ssi = [c for c in range(p) if is_strong_strong_basis(c, p)]
+        strong_strong_integers.append(ssi)
+        number_of_strong_strong_integers.append(len(ssi))
+        C *= len(ssi)
+
+    utils.colprint("Number of primes considered:", str(len(first_primes)))
+    utils.colprint("Number of strong strong integers to choose from:", "about 2^%f"%(gmpy2.log2(C)))
+
+    
+    # Check that the seed is long enough
+
+    if seed_upper_bound < C**2 * (1 << (2 * min_prime_bitsize)):
+        utils.exit_error("The seed does not contain the required entropy.")
+
+        
+    # Precomputations for the CRT
+
+    mu    = [gmpy2.divexact(PI,p) for p in first_primes]
+    delta = [gmpy2.invert(x,y) for x,y in zip(mu,first_primes)]
+    gamma = [gmpy2.mul(x,y) for x,y in zip(mu,delta)]
+
+
+    # Generate the first strong prime
+    
+    print("Generating the first strong strong prime...")
+    (p,seed) = generate_strong_strong_prime(seed,
+                                            min_prime_bitsize,
+                                            strong_strong_integers,
+                                            number_of_strong_strong_integers,
+                                            gamma,
+                                            PI)
+    utils.colprint("\tThis is the first strong strong prime:", str(p))
+
+    
+    # Generate the second strong prime
+    
+    print("Generating the second strong strong prime...")
+    (q,seed) = generate_strong_strong_prime(seed,
+                                            min_prime_bitsize,
+                                            strong_strong_integers,
+                                            number_of_strong_strong_integers,
+                                            gamma,
+                                            PI)
+    utils.colprint("\tThis is the second strong strong prime:", str(q))
+
+    
+    # Generate the BBS start
+
+    print("Generating the BBS starting point...")    
+    n = p*q
+    s = seed % n
+    while s == 0 or s == 1 or s == p or s == q:
+        s = (s+1) % n
+    s0 = (s**2) % n
+    utils.colprint("\tThis is the starting point s0 of BBS:", str(s0))
+
+    
+    # Save p,q, and s to the output_file
+
+    print("Saving p,q, and s0 to %s"%(output_file))
+    with open(output_file, "w") as f:
+        json.dump({"bbs_p": int(p), 
+                   "bbs_q": int(q), 
+                   "bbs_s": int(s0)}, 
+                  f,
+                  sort_keys=True)
+
+
+    
+def generate_strong_strong_prime(seed, min_bitsize,strong_strong_integers,number_of_strong_strong_integers,gamma,PI):
+    """Return a strong strong prime deterministically determined from the input parameters, and what remains of the seed.
+
+    Depending on the target prime size "min_bitsize", we need to find the appropriate table of first primes
+    [p_0,...,p_{f-2},p_{f-1}] such that PI = p_0 * ... * p_{f-1} is larger than 2**(min_bitsize-2), but such that p_0 *
+    ... * p_{f-2} is not. We'll store the primes in a table called "first_primes", such that first_primes[i] = p_i. The
+    variable "strong_strong_integers" will be a list of lists, such that strong_strong_integers[i] is the list of
+    integers r such that r, 2r+1 and 2(2r+1)+1 are invertible modulo first_primes[i]. Taking the inverse CRT on any
+    
+    [c_0,c_1,...,c_{f-1}] = [strong_strong_integers[0][i],strong_strong_integers[1][j],...,strong_strong_integers[f-1][k]]
+
+    gives an integer c such that c, 2c+1, and 4c+3 are invertible modulo PI, which makes c a good candidate for being
+    a strong strong prime generator (i.e., 4c+3 a good candidate for being a strong strong prime). The seed allows to
+    determine in initial array [c_0,c_1,...,c_{f-1}] and thus an initial candidate c. Going from one such array to the
+    other is done deterministically.
+
+    """
+
+    # Consume the seed and update it
+    
+    (indexes, seed) = list_of_indexes_from_seed(seed, number_of_strong_strong_integers)
+    
+    candidate_nbr = 0
+    while True:
+
+        alpha = [x[i] for x, i in zip(strong_strong_integers, indexes)] # alpha is in Z2* x Z3* x Z5* x ..... Apply the inverse CRT
+        c = sum([x*y for x, y in zip(alpha, gamma)]) % PI
+        candidate_nbr += 1
+        
+        if gmpy2.bit_length(c) >= min_bitsize-2 and subroutines.is_strong_strong_prime_generator(c):
+            break
+
+        indexes = next_indexes(indexes, number_of_strong_strong_integers)
+
+    print("\tThe successful candidate is the number %d"%(candidate_nbr))
+
+    return (4*c + 3,seed)
+
+    
+
+def is_strong_strong_basis(alpha, p):
+    """Return True if alpha, 2*alpha+1, and 2*(2*alpha+1) + 1 are invertible modulo p,
+    and false otherwise.
+
+    """
+
+    if (alpha % p) == 0:
+        return False
+    if ((2*alpha + 1) % p) == 0:
+        return False
+    if ((2*(2*alpha + 1) + 1) % p) == 0:
+        return False
+    return True
+
+
+def list_of_indexes_from_seed(seed, max_indexes):
+    """Return a list of len(max_indexes) indexes computed from the seed, such that
+    0 <= indexes[i] < max_indexes[i]. Also return what remains from the seed.
+    """
+    indexes = []
+    for i in range(len(max_indexes)):
+        r = seed % max_indexes[i]
+        seed = (seed-r) // max_indexes[i]
+        indexes.append(r)
+    return (indexes,seed)
+
+
+def next_indexes(indexes, max_indexes):
+    i = 0
+    while True:
+        indexes[i] = (indexes[i]+1) % max_indexes[i]
+        if indexes[i] == 0:
+            i = (i+1) % len(indexes)
+        else:
+            break
+    return indexes
+
+    
+if __name__ == "__main__":
+    main()
+-----END 02_generate_bbs_parameters.py-----
+
+-----BEGIN 03_generate_prime_field_using_bbs.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import argparse
+import bbsengine
+import json
+import os
+import subroutines
+import utils
+import gmpy2
+
+def main():
+
+    # Test local versions of libraries
+
+    utils.test_python_version()
+    utils.test_gmpy2_version()
+    
+    # Parse command line arguments
+
+    parser = argparse.ArgumentParser(description="Generate a prime field, suited for being the underlying field of a twist-secure Edwards curve.")
+    parser.add_argument("input_file", help="JSON file containing the BBS parameters (typically, the output of 02_generate_bbs_parameters.py).")
+    parser.add_argument("output_file", help="Output file where this script will write the prime of the field and the current BBS parameters.")
+    parser.add_argument("prime_size", type=int, help="Size of the prime (e.g. 256 bits)")
+    
+    args = parser.parse_args()
+
+    
+    # Check arguments
+
+    output_file = args.output_file
+    if os.path.exists(output_file):
+        utils.exit_error("The output file '%s' already exists. Exiting."%(output_file))
+
+    size = int(args.prime_size)
+
+    input_file = args.input_file
+    with open(input_file, "r") as f:
+        data = json.load(f)        
+    bbs_p = int(data["bbs_p"])
+    bbs_q = int(data["bbs_q"])
+    bbs_n = bbs_p * bbs_q
+    bbs_s = int(data["bbs_s"]) % bbs_n
+
+    
+    # Check inputs
+
+    print("Checking inputs...")
+    if not subroutines.is_strong_strong_prime(bbs_p):
+        utils.exit_error("bbs_p is not a strong strong prime.")
+    if not subroutines.is_strong_strong_prime(bbs_q):
+        utils.exit_error("bbs_q is not a strong strong prime.")
+
+        
+    # Initialize BBS
+
+    bbs = bbsengine.BBS(bbs_p, bbs_q, bbs_s)
+
+    
+    # generate a "size"-bit prime "p"
+
+    candidate_nbr = 0
+    print("Generating a prime field Fp (where p is congruent to 3 mod 4)...")
+    while True:
+        candidate_nbr += 1
+        bits = [1] + bbs.genbits(size-3) + [1,1]
+        assert(len(bits) == size)
+        p = 0
+        for bit in bits:
+            p = (p << 1) | bit
+        assert(p % 4 == 3)
+        assert(gmpy2.bit_length(p) == size)
+        if subroutines.deterministic_is_pseudo_prime(p):
+            break
+    utils.colprint("%d-bit prime found:"%size, str(p))
+    utils.colprint("The good candidate was number: ", str(candidate_nbr))
+
+    
+    # Save p and the current bbs parameters to the output_file
+
+    print("Saving p and the BBS parameters to %s"%(output_file))
+    bbs_s = bbs.s
+    with open(output_file, "w") as f:
+        json.dump({"p": int(p), 
+                   "bbs_p": int(bbs_p), 
+                   "bbs_q": int(bbs_q), 
+                   "bbs_s": int(bbs_s)}, 
+                  f,
+                  sort_keys=True)
+
+    
+if __name__ == "__main__":
+    main()
+-----END 03_generate_prime_field_using_bbs.py-----
+
+-----BEGIN 04_generate_curve_using_bbs.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import argparse
+import bbsengine
+import json
+import os
+import utils
+import subroutines
+from datetime import datetime
+import sys
+import gmpy2
+
+def main():
+
+    # Test local versions of libraries
+
+    utils.test_python_version()
+    utils.test_gmpy2_version()
+    utils.test_pari_version()
+    utils.test_pari_seadata()
+    
+    now = datetime.now()
+    
+    # Parse command line arguments
+
+    parser = argparse.ArgumentParser(description="Generate an Edwards curve over a given prime field, suited for cryptographic purposes.")
+    parser.add_argument("input_file",
+                        help="""JSON file containing the BBS parameters and the prime of the underlying field (typically, the output of
+                        03_generate_prime_field_using_bbs.py.
+                        """)
+    parser.add_argument("output_file", help="Output file where this script will write the parameter d of the curve and the current BBS parameters.")
+    parser.add_argument("--start",
+                        type=int,
+                        help="Number of the candidate to start with (default is 1).",
+                        default=1)
+    parser.add_argument("--max_nbr_of_tests",
+                        type=int,
+                        help="Number of candidates to test before stopping the script (default is to continue until success).")
+    parser.add_argument("--fast",
+                        help=""" While computing a the curve cardinality with SAE, early exit when the cardinality will obviously be divisible by
+                        a small integer > 4. This reduces the time required to find the final curve, but the
+                        cardinalities of previous candidates are not fully computed.
+                        """,
+                        default=False,
+                        action="store_true")
+
+    args = parser.parse_args()
+
+    
+    # Check arguments
+
+    print("Checking inputs...")
+    
+    output_file = args.output_file
+    if os.path.exists(output_file):
+        utils.exit_error("The output file '%s' already exists. Exiting."%(output_file))
+
+    input_file = args.input_file
+    with open(input_file, "r") as f:
+        data = json.load(f)
+
+        
+    # Declare a few important variables
+        
+    bbs_p = int(data["bbs_p"])
+    bbs_q = int(data["bbs_q"])
+    bbs_n = bbs_p * bbs_q
+    bbs_s = int(data["bbs_s"]) % bbs_n
+    p = int(data["p"])
+
+    start = max(int(args.start),1)
+
+    max_nbr_of_tests = None
+    if args.max_nbr_of_tests:
+        max_nbr_of_tests = int(args.max_nbr_of_tests)
+        
+    if not subroutines.is_strong_strong_prime(bbs_p):
+        utils.exit_error("bbs_p is not a strong strong prime.")
+    if not subroutines.is_strong_strong_prime(bbs_q):
+        utils.exit_error("bbs_q is not a strong strong prime.")
+    if not (subroutines.deterministic_is_pseudo_prime(p) and p%4 == 3):
+        utils.exit_error("p is not a prime congruent to 3 modulo 4.")
+
+        
+    # Initialize BBS
+
+    print("Initializing BBS...")
+    bbs = bbsengine.BBS(bbs_p, bbs_q, bbs_s)
+
+    
+    # Info about the prime field
+    
+    utils.colprint("Prime of the underlying prime field:", "%d (size: %d)"%(p, gmpy2.bit_length(p)))    
+    size = gmpy2.bit_length(p) # total number of bits queried to bbs for each test
+
+    
+    # Skip the first "start" candidates
+    
+    candidate_nbr = start-1
+    bbs.skipbits(size * (start-1))
+
+
+    # Start looking for "d"
+    
+    while True:
+        
+        if max_nbr_of_tests and candidate_nbr >= start + max_nbr_of_tests - 1:
+            print("Did not find an adequate parameter, starting at candidate %d (included), limiting to %d candidates."%(start, max_nbr_of_tests))
+            utils.exit_error("Last candidate checked was number %d."%(candidate_nbr))
+
+        candidate_nbr += 1
+
+        bits = bbs.genbits(size)
+        d = 0
+        for bit in bits:
+            d = (d << 1) | bit
+        print("The candidate number %d is d = %d (ellapsed time: %s)"%(candidate_nbr, d, str(datetime.now()-now)))
+
+        
+        # Test 1
+        
+        if not utils.check(d != 0 and d < p, "d != 0 and d < p", 1):
+            continue
+
+        # Test 2
+        
+        if not utils.check(gmpy2.legendre(d, p) == -1, "d is not a square modulo p", 2):
+            continue
+        
+        # Test 3
+        
+        if args.fast:
+            cardinality = subroutines.sea_edwards(1, d, p, 4)
+        else:
+            cardinality = subroutines.sea_edwards(1, d, p)
+        assert(cardinality % 4 == 0)
+        q = cardinality>>2
+        if not utils.check(subroutines.deterministic_is_pseudo_prime(q), "The curve cardinality / 4 is prime", 3):
+            continue
+
+        # Test 4
+        
+        trace = p+1-cardinality
+        cardinality_twist = p+1+trace
+        assert(cardinality_twist % 4 == 0)
+        q_twist = cardinality_twist>>2
+        if not utils.check(subroutines.deterministic_is_pseudo_prime(q_twist), "The twist cardinality / 4 is prime", 4):
+            continue
+        
+        # Test 5
+
+        if not utils.check(q != p and q_twist != p, "Curve and twist are safe against additive transfer", 5):
+            continue
+        
+        # Test 6
+
+        embedding_degree = subroutines.embedding_degree(p, q)
+        if not utils.check(embedding_degree > (q-1) // 100, "Curve is safe against multiplicative transfer", 6):
+            continue
+
+        # Test 7
+
+        embedding_degree_twist = subroutines.embedding_degree(p, q_twist)
+        if not utils.check(embedding_degree_twist > (q_twist-1) // 100, "Twist is safe against multiplicative transfer", 7):
+            continue
+
+        # Test 8
+
+        D = subroutines.cm_field_discriminant(p, trace)
+        if not utils.check(abs(D) >= 2**100, "Absolute value of the discriminant is larger than 2^100", 8):
+            continue
+
+        break
+
+    
+    # Find a base point
+
+    while True:
+    
+        bits = bbs.genbits(size)
+        y = 0
+        for bit in bits:
+            y = (y<<1) | bit
+        u = int((1 - y**2) * gmpy2.invert(1 - d*y**2, p)) % p
+        if gmpy2.legendre(u, p) == -1:
+            continue
+        x = gmpy2.powmod(u, (p+1) // 4, p)
+        (x,y) = subroutines.add_on_edwards(x, y, x, y, d, p)
+        (x,y) = subroutines.add_on_edwards(x, y, x, y, d, p)
+        if (x, y) == (0, 1):
+            continue
+
+        assert((x**2 + y**2) % p == (1 + d*x**2*y**2) % p)
+        
+        break
+
+    
+    # Print some informations
+    
+    utils.colprint("Number of the successful candidate:", str(candidate_nbr))
+    utils.colprint("Edwards elliptic curve parameter d is:", str(d))
+    utils.colprint("Number of points:", str(cardinality))
+    utils.colprint("Number of points on the twist:", str(cardinality_twist))
+    utils.colprint("Embedding degree of the curve:", "%d"%embedding_degree)
+    utils.colprint("Embedding degree of the twist:", "%d"%embedding_degree_twist)
+    utils.colprint("Discriminant:", "%d"%D)
+    utils.colprint("Trace:", "%d"%trace)
+    utils.colprint("Base point coordinates:", "(%d, %d)"%(x, y))
+
+    
+    # Save p, d, x, y, etc. to the output_file
+
+    print("Saving the parameters to %s"%output_file)
+    bbs_s = bbs.s
+    with open(output_file, "w") as f:
+        json.dump({"p": int(p),
+                   "bbs_p": int(bbs_p),
+                   "bbs_q": int(bbs_q),
+                   "bbs_s": int(bbs_s),
+                   "candidate_nbr": int(candidate_nbr),
+                   "d": int(d),
+                   "cardinality": cardinality,
+                   "cardinality_twist": cardinality_twist,
+                   "embedding_degree": embedding_degree,
+                   "embedding_degree_twist": embedding_degree_twist,
+                   "discriminant": D,
+                   "trace": trace,
+                   "base_point_x": x,
+                   "base_point_y": y},
+                  f,
+                  sort_keys=True)
+
+    
+if __name__ == "__main__":
+    main()
+-----END 04_generate_curve_using_bbs.py-----
+
+-----BEGIN bbsengine.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import gmpy2
+
+class BBS:
+    """Blum Blum Shub Pseudo Random Generator Engine"""
+
+    def __init__(self, p, q, s, shift=0):
+        self.p = p
+        self.q = q            
+        self.n = p * q
+        power = (2**shift) % ((p-1) * (q-1))
+        self.s = s % self.n
+        self.s = gmpy2.powmod(self.s, power, self.n)
+
+    def genbit(self):
+        self.s = (self.s**2) % self.n
+        return self.s & 1
+
+    def genbits(self, k):
+        bits = []
+        for i in range(k):
+            bits.append(self.genbit())
+        return bits
+
+    def skipbits(self,k):
+        power = (2**k) % ((self.p-1) * (self.q-1))
+        self.s = gmpy2.powmod(self.s, power, self.n)
+-----END bbsengine.py-----
+
+-----BEGIN pari_light_interface.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import os
+import ctypes
+import ctypes.util
+
+libpari = ctypes.CDLL(ctypes.util.find_library("pari"))
+
+
+_fx_pari_version          = libpari.pari_version
+_fx_pari_version.argtypes = None
+_fx_pari_version.restype  = ctypes.c_void_p
+
+def pari_version():
+    return _fx_pari_version()
+
+
+_fx_pari_sd_datadir          = libpari.sd_datadir
+_fx_pari_sd_datadir.argtypes = [ctypes.c_char_p, ctypes.c_long]
+_fx_pari_sd_datadir.restype  = ctypes.c_void_p
+
+def pari_sd_datadir():
+    return _fx_pari_sd_datadir(None, 3) # Deduced from paridecl.h
+
+
+_fx_pari_init          = libpari.pari_init
+_fx_pari_init.argtypes = [ctypes.c_size_t, ctypes.c_ulong]
+_fx_pari_init.restype  = None
+
+def pari_init(size, maxprime):
+    _fx_pari_init(size, maxprime)
+
+
+_fx_pari_close          = libpari.pari_close
+_fx_pari_close.argtypes = None
+_fx_pari_close.restype  = None
+
+def pari_close():
+    _fx_pari_close()
+    
+
+_fx_pari_gp_read_str          = libpari.gp_read_str
+_fx_pari_gp_read_str.argtypes = [ctypes.c_char_p]
+_fx_pari_gp_read_str.restype  = ctypes.c_void_p
+
+def pari_gp_read_str(s):
+    return _fx_pari_gp_read_str(str(s).encode("UTF-8"))
+
+
+_fx_pari_GENtostr          = libpari.GENtostr
+_fx_pari_GENtostr.argtypes = [ctypes.c_void_p]
+_fx_pari_GENtostr.restype  = ctypes.c_char_p
+
+def pari_GENtostr(a):
+    return _fx_pari_GENtostr(a)
+
+
+_fx_pari_addii          = libpari.addii
+_fx_pari_addii.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+_fx_pari_addii.restype  = ctypes.c_void_p
+
+def pari_addii(a, b):
+    return _fx_pari_addii(a, b)
+
+
+_fx_pari_Fp_ellcard_SEA          = libpari.Fp_ellcard_SEA
+_fx_pari_Fp_ellcard_SEA.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_long]
+_fx_pari_Fp_ellcard_SEA.restype  = ctypes.c_void_p
+
+def pari_Fp_ellcard_SEA(a4, a6, p, s):
+    return _fx_pari_Fp_ellcard_SEA(a4, a6, p, s)
+
+
+_fx_pari_Z_factor          = libpari.Z_factor
+_fx_pari_Z_factor.argtypes = [ctypes.c_void_p]
+_fx_pari_Z_factor.restype  = ctypes.c_void_p
+
+def pari_Z_factor(n):
+    return _fx_pari_Z_factor(n)
+
+
+def pari_gel(x, i):
+    s = ctypes.sizeof(ctypes.c_void_p)
+    v = ctypes.c_void_p.from_address(x + i*s)
+    return v.value
+
+
+def pari_lg(z):
+    s = ctypes.sizeof(ctypes.c_void_p)
+    header = ctypes.c_long.from_address(z).value
+    mask = (1 << (8*s - 8)) - 1 # Deduced from parigen.h
+    return header & mask
+-----END pari_light_interface.py-----
+
+-----BEGIN subroutines.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import pari_light_interface
+import gmpy2
+
+FIRST_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
+                103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211,
+                223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337,
+                347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461,
+                463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601,
+                607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739,
+                743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881,
+                883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, 1009, 1013, 1019, 1021,
+                1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097, 1103, 1109, 1117, 1123, 1129,
+                1151, 1153, 1163, 1171, 1181, 1187, 1193, 1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277,
+                1279, 1283, 1289, 1291, 1297, 1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399, 1409,
+                1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499, 1511,
+                1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597, 1601, 1607, 1609, 1613, 1619]
+
+def pari_version():
+
+    pari_light_interface.pari_init(100000000, 0)
+
+    _v = pari_light_interface.pari_version()
+    _x = pari_light_interface.pari_gel(_v, 1)
+    _y = pari_light_interface.pari_gel(_v, 2)
+    _z = pari_light_interface.pari_gel(_v, 3)
+    x = int(pari_light_interface.pari_GENtostr(_x))
+    y = int(pari_light_interface.pari_GENtostr(_y))
+    z = int(pari_light_interface.pari_GENtostr(_z))
+
+    pari_light_interface.pari_close()
+    
+    return str("%d.%d.%d"%(x,y,z))
+
+def pari_cfg_datadir():
+
+    pari_light_interface.pari_init(100000000, 0)
+
+    _s = pari_light_interface.pari_sd_datadir()
+    s = str(pari_light_interface.pari_GENtostr(_s).decode('utf-8'))[1:-1]
+    
+    pari_light_interface.pari_close()
+
+    return s
+    
+def sea_weierstrass(a, b, p, s=0):
+
+    pari_light_interface.pari_init(100000000, 0)
+
+    _a = pari_light_interface.pari_gp_read_str(str(a))
+    _b = pari_light_interface.pari_gp_read_str(str(b))
+    _p = pari_light_interface.pari_gp_read_str(str(p))
+
+    _t = pari_light_interface.pari_Fp_ellcard_SEA(_a, _b, _p, s)
+    t  = pari_light_interface.pari_GENtostr(_t)
+    
+    pari_light_interface.pari_close()
+    
+    return int(t)
+
+def sea_montgomery(A, B, p, s=0):
+    (a,b) = _weierstrass_parameters_from_montgomery_parameters(A, B, p)
+    return sea_weierstrass(a, b, p, s)
+
+def sea_edwards(a, d, p, s=0):
+    (A,B) = _montgomery_parameters_from_edwards_parameters(a, d, p)
+    return sea_montgomery(A, B, p, s)
+
+def _weierstrass_parameters_from_montgomery_parameters(A, B, p):
+    a = ((3 - A**2) * gmpy2.invert(3*B**2, p)) % p
+    b = ((2*A**3 - 9*A) * gmpy2.invert(27*B**3, p)) % p
+    return (a, b)
+
+def _montgomery_parameters_from_edwards_parameters(a, d, p):
+    A = (2 * (a+d) * gmpy2.invert(a - d, p)) % p
+    B = (4 * gmpy2.invert(a - d, p)) % p
+    return (A, B)
+
+def factor(n):
+
+    pari_light_interface.pari_init(100000000, 0)
+
+    _n = pari_light_interface.pari_gp_read_str(str(n))
+
+    _A = pari_light_interface.pari_Z_factor(_n)
+    _P = pari_light_interface.pari_gel(_A, 1)
+    _M = pari_light_interface.pari_gel(_A, 2)
+    l = pari_light_interface.pari_lg(_P)
+    
+    f = []
+    for i in range(1, l):
+        _p = int(pari_light_interface.pari_gel(_P, i))
+        p = int(pari_light_interface.pari_GENtostr(_p))
+        _m = int(pari_light_interface.pari_gel(_M, i))
+        m = int(pari_light_interface.pari_GENtostr(_m))
+        if f and len(f) > 0:
+            assert(p > f[-1][0]) # if this fails, add some code that makes sure f is sorted
+        f.append([p, m])
+
+    pari_light_interface.pari_close()
+    
+    return f
+
+def cm_field_discriminant(p, t):
+
+    # Compute s^2, the largest square dividing t^2-4p
+    s_square = 1
+    factors = factor(t**2 - 4*p)
+    for f in factors:
+        if f[1] % 2 == 0:
+            s_square *= f[0]**f[1]
+        else:
+            s_square *= f[0]**(f[1]-1)
+    assert((t**2 - 4*p) % s_square == 0)
+
+    # Compute D
+    D = (t**2 - 4*p) // s_square
+    if D % 4 != 1:
+        D *= 4
+
+    return D
+
+def embedding_degree(p, q):
+    """Given p (typically the prime of the base field) and q (typically the order of a large subgroup the EC), return the
+    embedding degree of the curve, i.e., the smallest m such that p^m = 1 (mod q).
+    
+    Keyword arguments:
+    p -- prime of the base field
+    q -- the order of a large subgroup the EC
+    """
+    m = q - 1
+    factors = factor(m)
+    for f in factors:
+        for i in range(f[1]):
+            if (p^(m // f[0])) % q == 1:
+                m = m // f[0]
+
+    return m
+
+
+def is_strong_prime(p):
+    if not deterministic_is_pseudo_prime(p):
+        return False
+    p = (p-1) >> 1
+    return deterministic_is_pseudo_prime(p)
+
+
+def is_strong_strong_prime(p):
+    if not deterministic_is_pseudo_prime(p):
+        return False
+    p = (p-1) >> 1
+    if not deterministic_is_pseudo_prime(p):
+        return False
+    p = (p-1) >> 1
+    return deterministic_is_pseudo_prime(p)
+
+
+def is_strong_strong_prime_generator(p):
+    if not deterministic_is_pseudo_prime(p):
+        return False
+    p = (p<<1) + 1
+    if not deterministic_is_pseudo_prime(p):
+        return False
+    p = (p<<1) + 1
+    return deterministic_is_pseudo_prime(p)
+
+def add_on_edwards(x1, y1, x2, y2, d, p):
+    x = int((x1*y2 + x2*y1) * gmpy2.invert(1+d*x1*x2*y1*y2, p)) % p
+    y = int((y1*y2 - x1*x2) * gmpy2.invert(1-d*x1*x2*y1*y2, p)) % p
+    return (x,y)
+
+def deterministic_is_pseudo_prime(n, k=64):
+    assert(k <= len(FIRST_PRIMES))
+    if n in FIRST_PRIMES:
+        return True
+    if n < max(FIRST_PRIMES):
+        return False
+    if n & 1 == 0:
+        return False
+    # Find s and t
+    s = 0
+    t = n - 1
+    while t & 1 == 0:
+        s += 1
+        t = t >> 1
+    assert(n == 2**s * t + 1)
+    # main loop
+    for j in range(k):
+        b = FIRST_PRIMES[j]
+        x = gmpy2.powmod(b, t, n)
+        i = 0
+        if x != 1:
+            while x != n - 1:
+                x = gmpy2.powmod(x, 2, n)
+                i += 1
+                if i == s or x == 1:
+                    return False
+    return True
+-----END subroutines.py-----
+
+-----BEGIN utils.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import sys
+import platform
+import os.path
+import subroutines
+import gmpy2
+
+
+def exit_error(s):
+    sys.exit("[ERROR] %s"%s)
+
+    
+def colprint(col1,col2 = "",col1_size = 50):
+    col1_size = max(col1_size, len(col1))
+    if col2 != "":
+        print(col1 + " " * (col1_size - len(col1)) + col2)
+    else:
+        print(col1)
+
+        
+def check(test, test_description="", test_number=None):
+    
+    if test_description != "":
+        if test_number != None:
+            print("\tTest %d: %s... "%(test_number,test_description), end="", flush=True)
+        else:
+            print("\tTesting %s... "%(test_description), end="", flush=True)
+            
+    if test:
+        print("Success")
+        return True
+    else:
+        print("Failure")
+        return False
+    
+    
+def test_gmpy2_version():
+    expected_gmpy2_version = '2.0.7'
+    local_gmpy2_version = gmpy2.version()
+    if local_gmpy2_version != expected_gmpy2_version:
+        print('[WARNING] You are using version %s of gmpy2. These scripts have been tested with version %s'
+              %(local_gmpy2_version, expected_gmpy2_version), file=sys.stderr)
+
+        
+def test_python_version():
+    expected_python_version = '3.4.3'
+    local_python_version = platform.python_version()
+    if local_python_version != expected_python_version:
+        print('[WARNING] You are using version %s of Python. These scripts have been tested with version %s'
+              %(local_python_version, expected_python_version), file=sys.stderr)
+
+        
+def test_pari_version():
+    expected_pari_version = '2.7.4'
+    local_pari_version = subroutines.pari_version()
+    if local_pari_version != expected_pari_version:
+        print('[WARNING] You are using version %s of PARI. These scripts have been tested with version %s'
+              %(local_pari_version, expected_pari_version), file=sys.stderr)
+    
+        
+def test_pari_seadata():
+    """Look for the seadata package for PARI. Exit if it cannot be found."""
+    datadir = subroutines.pari_cfg_datadir()
+    seadata_path = os.path.join(datadir,"seadata")
+    if not os.path.exists(seadata_path):
+        exit_error("Cannot find the seadata.tgz package for PARI. Please install this package in %s. See http://pari.math.u-bordeaux.fr/packages.html."%(datadir))
+-----END utils.py-----
+
+# References
+
+[1] Thomas Baigneres, Cecile Delerablee, Matthieu Finiasz, Louis Goubin, Tancrede Lepoint, and Matthieu Rivain. Trap Me If You Can (Million Dollar Curve). Available on https://www.cryptoexperts.com
+[2] PARI/GP. http://pari.math.u-bordeaux.fr
+[3] Python. https://www.python.org
+[4] GMP. The GNU Multiple Precision Arithmetic Library. https://gmplib.org
