@@ -1,0 +1,105 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+============================================================================
+   Certificate
+============================================================================
+In conjunction with the file(s) that produce the following SHA-2 fingerprint,
+and in conjunction with the verification procedures available on
+TrueTimeStamp.org (copy available below), this certifies that the following
+file existed and was time-stamped on:
+
+Time: January 29, 2016 10:57:48 am GMT
+Stored SHA-2 Fingerprint:
+f8bdb5bd4957a2d65b567378bb32744d0d0573a77e4ef0247311a5a4b98744da
+Certificate Type: single-file
+Constituent Files:
+f8bdb5bd4957a2d65b567378bb32744d0d0573a77e4ef0247311a5a4b98744da	2016_01_29_million_dollar_curve_seeding.txt
+
+============================================================================
+   Certificate Information
+============================================================================
+Authority: True Time Stamp ( http://TrueTimeStamp.org )
+Certificate Number: 1516
+Sequential Validity Chain: 89c1651e5455fe3ce86bb47e98e6a4afed654bb7db6ed48d28ea2c1efeea520b
+
+============================================================================
+   Important Note
+============================================================================
+1 - Backup copy of the original unaltered file must be kept to authenticate
+    this certificate. 
+2 - Some editing programs may inadverently alter files by including the
+    "save time" in the file contents, or changing character encoding, even if
+     no edits are made.  Back-up using your operating system's copy function
+     rather than "Save As".
+
+============================================================================
+   Verification Procedures
+============================================================================
+Online - Single File Certificate:
+  - Supply the ORIGINAL FILE to http://TrueTimeStamp.org for verification.
+
+Online - Multiple File Certificate:
+  - Supply THIS CERTIFICATE to http://TrueTimeStamp.org for verification.
+  - Additionally, for each file that you want to prove existed at the time
+    point above, you must confirm that the SHA-2 of these file(s) matches
+    those listed above (see instructions "Calculate SHA-2 Fingerprint of a
+    file" below).
+
+Offline Procedures:
+  - Use these procedures if http://TrueTimeStamp.org ceases to exist, or if
+    you would like to independently confirm the electronic signature of this
+    certificate.
+  - Obtain GPG software ( https://www.gnupg.org/download )    
+  - Obtain the True Time Stamp Public Key, from any of the servers below, by
+        searching by email:
+        EMAIL: signing-department@TrueTimeStamp.org
+        KEY ID: B748A8F8
+        - http://truetimestamp.org/public-keys
+        - https://pgp.mit.edu
+        - http://keyserver.cns.vt.edu:11371
+        - http://keyserver.lsuhscshreveport.edu:11371
+        - http://keyserver.ubuntu.com
+        - https://keyserver.pgp.com
+        - http://keyserver.searchy.nl:11371
+        - http://keyserver.compbiol.bio.tu-darmstadt.de:11371
+  - Download the appropriate key, save as TrueTimeStamp-key4-DSA-3072.asc
+  - Optionally, verify the fingerprint of the public key.
+        PUBLIC KEY SHA-2 FINGERPRINT, base64 representation, UTF-8,
+        UNIX-style line breaks, without headers or footers:
+        16fecee8a5fd4cc39facfd1c5db36fe2eec553cf0dfa2e7496d4a3556027790e
+  - Import the downloaded public-key via command-line:
+       gpg --import TrueTimeStamp-key4-DSA-3072.asc
+  - Verify the authenticity of this certificate via command-lines:
+       gpg --import TrueTimeStamp-key4-DSA-3072.asc
+       gpg --verify myCertificateFile
+  - For multi-file certificates, you may also confirm that:
+  		Stored SHA-2 Fingerprint matches the "Constituent Files" section
+  		   - Copy & Paste text under "Constituent Files" section into a
+                separate file, and save without trailing spaces and using
+                UNIX-style newlines.
+  		   - Calculate SHA-2 of this file, and confirm that this matches the
+  		        Stored SHA-2 fingerprint.
+  - For each file that you want to confirm the time stamp, calculate its SHA-2
+       fingerprint, and confirm that this is present in this certificate above.
+
+To Calculate SHA-2 Fingerprint of a file:
+   - Online at http://TrueTimeStamp.org
+   - Using software such as sha256sum, or openssl, with the command-lines:
+        sha256sum MyFileName
+        openssl dgst -sha256 MyFileName
+
+Sequential Validity Chain:
+   - Guards against back-dating any time stamp, or removing any time stamp
+         in the future.
+   - Consists of SHA-2( Sequential Validity Chain of previous certificate,
+         SHA-2 of current file, UNIX Time Stamp).
+   - Validity Chains are intermittently submitted to other Time Stamping
+         Services.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iFcDBQFWq0WsbzsuardIqPgRCPy+AP4sMj+0hkzfsOyLjIMdRUp1433MGDC6fobG
+GArU4Sf23gEAxi+p9eEfaHF0sc7BZ3JqVcU6M10DHfqWp7hJk4UnsuA=
+=G8Au
+-----END PGP SIGNATURE-----

@@ -1,0 +1,562 @@
+# Description
+
+This file specifies a proper way of seeding the design of the Million Dollar Curve cryptosystem, in the sense of [1]. It
+commits on an ordered list of *future* lottery draws and on a way to turn these draws into a seed (and upper bound on
+the seed), when the times come. This seed will then be used "as-is" as an input to the design specified below.
+
+See https://cryptoexperts.github.io/million-dollar-curve
+
+
+
+# Authors
+
+CryptoExperts
+
+
+
+# Date
+
+29th of January, 2016
+
+
+
+# Contact
+
+curves@cryptoexperts.com
+
+
+
+# Committed design
+
+The design we consider is the Million Dollar Curve cryptosystem, as specified in the file 2016_01_27_million_dollar_curve.txt
+available at:
+
+https://cryptoexperts.github.io/million-dollar-curve/specifications/mdcurve_201601/2016_01_27_million_dollar_curve.txt
+
+The SHA256 of this file is
+
+e9dd4baf0d351b5a64c59ed6b1efd3108094b3585e17a0e5350fb200500058d9
+
+The design was timestamped on the 27th of January, 2016 using various means, including:
+
+- By obtaining a certificate from Let's Encrypt for the URL
+
+  mdcurve.design.201601.sha256.e9dd4baf0d351b5a.64c59ed6b1efd310.8094b3585e17a0e5.350fb200500058d9.cryptoexperts.com
+
+  where one can see the SHA256 hash of the design text file. The certificate can be consulted/validated by visiting the following url:
+
+  https://mdcurve.design.201601.sha256.e9dd4baf0d351b5a.64c59ed6b1efd310.8094b3585e17a0e5.350fb200500058d9.cryptoexperts.com/
+
+- By posting the following tweet on CryptoExperts' Twitter account (@CryptoExperts):
+
+  #MDCurve201601 SHA256 e9dd4baf0d351b5a64c59ed6b1efd3108094b3585e17a0e5350fb200500058d9
+  https://cryptoexperts.github.io/million-dollar-curve/specifications/mdcurve_201601/2016_01_27_million_dollar_curve.txt
+
+  At the time of writing, the tweet is available at:
+
+  https://twitter.com/CryptoExperts/status/692396931864203264
+
+- By adding a note to the technical paper [1] on the Cryptology ePrint Archive. Accessible at:
+
+  https://eprint.iacr.org/2015/1249/20160127:164115
+
+
+
+# Commitment on this file
+
+We will commit on this text using similar means as for the 2016_01_27_million_dollar_curve.txt file describing the
+design. The list of all the commitments will be made available at
+
+https://cryptoexperts.github.io/million-dollar-curve/
+
+
+
+# About the list of ordered future lottery draws
+
+The exact list of lottery draws we consider is given below. Lines beginning with a '#' are ignored. Any blank line is
+ignored. Apart from these, each line corresponds to one lottery draw, identified by a clear 'id'. The ids follow a
+strict naming convention:
+
+YYYY-MM-DD_<2 letters country code>_<string allowing to identify the game considered>_<optional number indicating the number of the draw, when the game draws multiple times on the same day>.
+
+The columns after the 'id' respectively denote the number of balls drawn (m) and the total number of balls available
+(n). The last column will eventually contain a list of the balls drawn (the order does not matter).
+
+Consider, for example, the first line of the list:
+
+2016-02-01_au_monday_lotto      6  45 None
+
+The first column "2016-02-01_au_monday_lotto" is the id of the Monday Loto draw that will take place on the 1st of
+February 2016 in Australia. This game draws 6 balls among 45. Since the result of this future draw is not known yet, we
+indicate 'None' in the last column.
+
+Another example: consider the draw identified by
+
+2016-02-01_nz_keno_1            20 80 None
+
+This id designates the *first* Keno draw that will take place in New Zealand on the 1st of February 2016. This game draws
+20 numbers among 80, and does so 4 times on the 1st of February. This is why the id is post-fixed with a '_1'.
+
+The complete list of 260 draws is specified later in this file. Note that the draws have been ordered so as to avoid
+consecutive draws from the same country.
+
+
+
+# How to update the list when the draw results will be known
+
+Assuming for example that the Monday Loto numbers drawn on the 1st of February 2016 in Australia are 1, 36, 5, 9, 31,
+and 25, one should update the corresponding line as follows:
+
+2016-02-01_au_monday_lotto      6  45 1,36,5,9,31,25
+
+Note that the order in which the drawn numbers are specified is not important (i.e., it has no influence on the computed
+seed).
+
+
+
+# How to treat missing draws
+
+It might happen that a specific lottery decides *not* to perform a draw at a date when it was supposed to. When this
+occurs, we choose to specify 'None' as a draw result. In that case, the corresponding line will be ignored in the seed
+computation. If such events occur too often among the list of draws indicated below, the script we provide will simply
+abort, so as to avoid generating a seed that would not contain the required amount of entropy. To increase our success
+probability, we took care of listing more lottery draws than necessary.
+
+
+
+# How to compute the seed from the lottery draws
+
+The Python 3 script we provide below allows to compute a seed from the draws, when all the results become available
+(i.e., after the 14th of February, 2016). Assuming that the file containing those results is named 'draws.txt', the
+script should typically be executed as follows:
+
+python3 01_draws_to_seed.py draws.txt in_02.json 8192 --nbr_lone_bits 30
+
+If the script succeeds, the seed obtained is guaranteed to contain at least 8192 bits of entropy and 30 additional lone
+bits (see [1] for more details).
+
+
+# The ordered list of 260 lottery draws
+
+-----BEGIN LOTTERY DRAWS FILE (draws_empty.txt)-----
+# Start date (t3): 2016-02-01
+# Target Entropy: 8192
+
+# Draw Id                       m  n  draw
+2016-02-01_au_monday_lotto      6  45 None
+2016-02-01_nz_keno_1            20 80 None
+2016-02-01_fr_loto              5  49 None
+2016-02-01_br_quina             5  80 None
+2016-02-01_ca_daily_keno_midday 20 70 None
+2016-02-01_nz_keno_2            20 80 None
+2016-02-01_de_keno              20 70 None
+2016-02-01_br_lotofacil         15 25 None
+2016-02-01_fr_keno_midday       20 70 None
+2016-02-01_nz_keno_3            20 80 None
+2016-02-01_ca_daily_keno_night  20 70 None
+2016-02-01_es_bonoloto          6  49 None
+2016-02-01_nz_keno_4            20 80 None
+2016-02-01_fr_keno_night        20 70 None
+2016-02-01_us_ny_cash_4_life    5  60 None
+2016-02-02_nz_keno_1            20 80 None
+2016-02-02_br_quina             5  80 None
+2016-02-02_au_oz_lotto          7  45 None
+2016-02-02_ca_daily_keno_midday 20 70 None
+2016-02-02_it_super_enalotto    6  90 None
+2016-02-02_nz_keno_2            20 80 None
+2016-02-02_de_keno              20 70 None
+2016-02-02_fr_keno_midday       20 70 None
+2016-02-02_nz_keno_3            20 80 None
+2016-02-02_eu_euromillions      5  50 None
+2016-02-02_ca_daily_keno_night  20 70 None
+2016-02-02_br_dupla_sena        6  50 None
+2016-02-02_es_bonoloto          6  49 None
+2016-02-02_us_mega_millions     5  75 None
+2016-02-02_nz_keno_4            20 80 None
+2016-02-02_fr_keno_night        20 70 None
+2016-02-02_uk_health_lottery    5  50 None
+2016-02-03_nz_keno_1            20 80 None
+2016-02-03_us_hot_lotto         5  47 None
+2016-02-03_fr_loto              5  49 None
+2016-02-03_nz_lotto             6  40 None
+2016-02-03_br_quina             5  80 None
+2016-02-03_ca_daily_keno_midday 20 70 None
+2016-02-03_nz_keno_2            20 80 None
+2016-02-03_ch_loto              6  42 None
+2016-02-03_de_keno              20 70 None
+2016-02-03_us_wild_card         5  33 None
+2016-02-03_br_lotofacil         15 25 None
+2016-02-03_fr_keno_midday       20 70 None
+2016-02-03_be_lotto             6  45 None
+2016-02-03_nz_keno_3            20 80 None
+2016-02-03_us_powerball         5  69 None
+2016-02-03_de_lotto             6  49 None
+2016-02-03_au_wednesday_lotto   6  45 None
+2016-02-03_ca_daily_keno_night  20 70 None
+2016-02-03_es_bonoloto          6  49 None
+2016-02-03_nz_keno_4            20 80 None
+2016-02-03_us_ny_lotto          6  59 None
+2016-02-03_fr_keno_night        20 70 None
+2016-02-03_uk_health_lottery    5  50 None
+2016-02-03_br_mega_sena         6  60 None
+2016-02-03_ca_loto_649          6  49 None
+2016-02-04_nz_keno_1            20 80 None
+2016-02-04_br_quina             5  80 None
+2016-02-04_ca_daily_keno_midday 20 70 None
+2016-02-04_it_super_enalotto    6  90 None
+2016-02-04_nz_keno_2            20 80 None
+2016-02-04_es_la_primitiva      6  49 None
+2016-02-04_de_keno              20 70 None
+2016-02-04_fr_keno_midday       20 70 None
+2016-02-04_nz_keno_3            20 80 None
+2016-02-04_ca_daily_keno_night  20 70 None
+2016-02-04_es_bonoloto          6  49 None
+2016-02-04_nz_keno_4            20 80 None
+2016-02-04_au_powerball         6  40 None
+2016-02-04_fr_keno_night        20 70 None
+2016-02-04_uk_health_lottery    5  50 None
+2016-02-04_us_ny_cash_4_life    5  60 None
+2016-02-05_nz_keno_1            20 80 None
+2016-02-05_de_euro_jackpot      5  50 None
+2016-02-05_br_quina             5  80 None
+2016-02-05_ca_daily_keno_midday 20 70 None
+2016-02-05_nz_keno_2            20 80 None
+2016-02-05_ca_loto_max          7  49 None
+2016-02-05_de_keno              20 70 None
+2016-02-05_br_lotofacil         15 25 None
+2016-02-05_fr_keno_midday       20 70 None
+2016-02-05_nz_keno_3            20 80 None
+2016-02-05_eu_euromillions      5  50 None
+2016-02-05_ca_daily_keno_night  20 70 None
+2016-02-05_br_dupla_sena        6  50 None
+2016-02-05_es_bonoloto          6  49 None
+2016-02-05_us_mega_millions     5  75 None
+2016-02-05_nz_keno_4            20 80 None
+2016-02-05_fr_keno_night        20 70 None
+2016-02-05_uk_health_lottery    5  50 None
+2016-02-06_nz_keno_1            20 80 None
+2016-02-06_us_hot_lotto         5  47 None
+2016-02-06_fr_loto              5  49 None
+2016-02-06_nz_lotto             6  40 None
+2016-02-06_br_quina             5  80 None
+2016-02-06_ca_daily_keno_midday 20 70 None
+2016-02-06_it_super_enalotto    6  90 None
+2016-02-06_nz_keno_2            20 80 None
+2016-02-06_ch_loto              6  42 None
+2016-02-06_es_la_primitiva      6  49 None
+2016-02-06_de_keno              20 70 None
+2016-02-06_us_wild_card         5  33 None
+2016-02-06_fr_keno_midday       20 70 None
+2016-02-06_be_lotto             6  45 None
+2016-02-06_ca_lottario          6  45 None
+2016-02-06_nz_keno_3            20 80 None
+2016-02-06_us_powerball         5  69 None
+2016-02-06_de_lotto             6  49 None
+2016-02-06_ca_daily_keno_night  20 70 None
+2016-02-06_es_bonoloto          6  49 None
+2016-02-06_nz_keno_4            20 80 None
+2016-02-06_mu_loto              6  40 None
+2016-02-06_us_ny_lotto          6  59 None
+2016-02-06_fr_keno_night        20 70 None
+2016-02-06_au_saturday_lotto    6  45 None
+2016-02-06_uk_health_lottery    5  50 None
+2016-02-06_br_mega_sena         6  60 None
+2016-02-06_nl_lotto             6  45 None
+2016-02-06_ca_loto_649          6  49 None
+2016-02-07_nz_keno_1            20 80 None
+2016-02-07_ca_daily_keno_midday 20 70 None
+2016-02-07_nz_keno_2            20 80 None
+2016-02-07_de_keno              20 70 None
+2016-02-07_fr_keno_midday       20 70 None
+2016-02-07_nz_keno_3            20 80 None
+2016-02-07_ca_daily_keno_night  20 70 None
+2016-02-07_nz_keno_4            20 80 None
+2016-02-07_es_el_gordo          5  54 None
+2016-02-07_fr_keno_night        20 70 None
+2016-02-08_au_monday_lotto      6  45 None
+2016-02-08_nz_keno_1            20 80 None
+2016-02-08_fr_loto              5  49 None
+2016-02-08_br_quina             5  80 None
+2016-02-08_ca_daily_keno_midday 20 70 None
+2016-02-08_nz_keno_2            20 80 None
+2016-02-08_de_keno              20 70 None
+2016-02-08_br_lotofacil         15 25 None
+2016-02-08_fr_keno_midday       20 70 None
+2016-02-08_nz_keno_3            20 80 None
+2016-02-08_ca_daily_keno_night  20 70 None
+2016-02-08_es_bonoloto          6  49 None
+2016-02-08_nz_keno_4            20 80 None
+2016-02-08_fr_keno_night        20 70 None
+2016-02-08_us_ny_cash_4_life    5  60 None
+2016-02-09_nz_keno_1            20 80 None
+2016-02-09_br_quina             5  80 None
+2016-02-09_au_oz_lotto          7  45 None
+2016-02-09_ca_daily_keno_midday 20 70 None
+2016-02-09_it_super_enalotto    6  90 None
+2016-02-09_nz_keno_2            20 80 None
+2016-02-09_de_keno              20 70 None
+2016-02-09_fr_keno_midday       20 70 None
+2016-02-09_nz_keno_3            20 80 None
+2016-02-09_eu_euromillions      5  50 None
+2016-02-09_ca_daily_keno_night  20 70 None
+2016-02-09_br_dupla_sena        6  50 None
+2016-02-09_es_bonoloto          6  49 None
+2016-02-09_us_mega_millions     5  75 None
+2016-02-09_nz_keno_4            20 80 None
+2016-02-09_fr_keno_night        20 70 None
+2016-02-09_uk_health_lottery    5  50 None
+2016-02-10_nz_keno_1            20 80 None
+2016-02-10_us_hot_lotto         5  47 None
+2016-02-10_fr_loto              5  49 None
+2016-02-10_nz_lotto             6  40 None
+2016-02-10_br_quina             5  80 None
+2016-02-10_ca_daily_keno_midday 20 70 None
+2016-02-10_nz_keno_2            20 80 None
+2016-02-10_ch_loto              6  42 None
+2016-02-10_de_keno              20 70 None
+2016-02-10_us_wild_card         5  33 None
+2016-02-10_br_lotofacil         15 25 None
+2016-02-10_fr_keno_midday       20 70 None
+2016-02-10_be_lotto             6  45 None
+2016-02-10_nz_keno_3            20 80 None
+2016-02-10_us_powerball         5  69 None
+2016-02-10_de_lotto             6  49 None
+2016-02-10_au_wednesday_lotto   6  45 None
+2016-02-10_ca_daily_keno_night  20 70 None
+2016-02-10_es_bonoloto          6  49 None
+2016-02-10_nz_keno_4            20 80 None
+2016-02-10_us_ny_lotto          6  59 None
+2016-02-10_fr_keno_night        20 70 None
+2016-02-10_uk_health_lottery    5  50 None
+2016-02-10_br_mega_sena         6  60 None
+2016-02-10_ca_loto_649          6  49 None
+2016-02-11_nz_keno_1            20 80 None
+2016-02-11_br_quina             5  80 None
+2016-02-11_ca_daily_keno_midday 20 70 None
+2016-02-11_it_super_enalotto    6  90 None
+2016-02-11_nz_keno_2            20 80 None
+2016-02-11_es_la_primitiva      6  49 None
+2016-02-11_de_keno              20 70 None
+2016-02-11_fr_keno_midday       20 70 None
+2016-02-11_nz_keno_3            20 80 None
+2016-02-11_ca_daily_keno_night  20 70 None
+2016-02-11_es_bonoloto          6  49 None
+2016-02-11_nz_keno_4            20 80 None
+2016-02-11_au_powerball         6  40 None
+2016-02-11_fr_keno_night        20 70 None
+2016-02-11_uk_health_lottery    5  50 None
+2016-02-11_us_ny_cash_4_life    5  60 None
+2016-02-12_nz_keno_1            20 80 None
+2016-02-12_de_euro_jackpot      5  50 None
+2016-02-12_br_quina             5  80 None
+2016-02-12_ca_daily_keno_midday 20 70 None
+2016-02-12_nz_keno_2            20 80 None
+2016-02-12_ca_loto_max          7  49 None
+2016-02-12_de_keno              20 70 None
+2016-02-12_br_lotofacil         15 25 None
+2016-02-12_fr_keno_midday       20 70 None
+2016-02-12_nz_keno_3            20 80 None
+2016-02-12_eu_euromillions      5  50 None
+2016-02-12_ca_daily_keno_night  20 70 None
+2016-02-12_br_dupla_sena        6  50 None
+2016-02-12_es_bonoloto          6  49 None
+2016-02-12_us_mega_millions     5  75 None
+2016-02-12_nz_keno_4            20 80 None
+2016-02-12_fr_keno_night        20 70 None
+2016-02-12_uk_health_lottery    5  50 None
+2016-02-13_nz_keno_1            20 80 None
+2016-02-13_us_hot_lotto         5  47 None
+2016-02-13_fr_loto              5  49 None
+2016-02-13_nz_lotto             6  40 None
+2016-02-13_br_quina             5  80 None
+2016-02-13_ca_daily_keno_midday 20 70 None
+2016-02-13_it_super_enalotto    6  90 None
+2016-02-13_nz_keno_2            20 80 None
+2016-02-13_ch_loto              6  42 None
+2016-02-13_es_la_primitiva      6  49 None
+2016-02-13_de_keno              20 70 None
+2016-02-13_us_wild_card         5  33 None
+2016-02-13_fr_keno_midday       20 70 None
+2016-02-13_be_lotto             6  45 None
+2016-02-13_ca_lottario          6  45 None
+2016-02-13_nz_keno_3            20 80 None
+2016-02-13_us_powerball         5  69 None
+2016-02-13_de_lotto             6  49 None
+2016-02-13_ca_daily_keno_night  20 70 None
+2016-02-13_es_bonoloto          6  49 None
+2016-02-13_nz_keno_4            20 80 None
+2016-02-13_mu_loto              6  40 None
+2016-02-13_us_ny_lotto          6  59 None
+2016-02-13_fr_keno_night        20 70 None
+2016-02-13_au_saturday_lotto    6  45 None
+2016-02-13_uk_health_lottery    5  50 None
+2016-02-13_br_mega_sena         6  60 None
+2016-02-13_nl_lotto             6  45 None
+2016-02-13_ca_loto_649          6  49 None
+2016-02-14_nz_keno_1            20 80 None
+2016-02-14_ca_daily_keno_midday 20 70 None
+2016-02-14_nz_keno_2            20 80 None
+2016-02-14_de_keno              20 70 None
+2016-02-14_fr_keno_midday       20 70 None
+2016-02-14_nz_keno_3            20 80 None
+2016-02-14_ca_daily_keno_night  20 70 None
+2016-02-14_nz_keno_4            20 80 None
+2016-02-14_es_el_gordo          5  54 None
+2016-02-14_fr_keno_night        20 70 None
+-----END LOTTERY DRAWS FILE (draws_empty.txt)-----
+
+
+
+# The script turning a list of lottery draws into a seed
+
+The script 01_draws_to_seed.py provided below requires three helper files
+
+- utils.py,
+
+- subroutines.py, and
+
+- pari_light_interface.py,
+
+that were provided in the committed design text file 2016_01_27_million_dollar_curve.txt. As for the scripts provided
+with the committed design, our Python 3 script requires the gmpy2 library.
+
+-----BEGIN 01_draws_to_seed.py-----
+#!/usr/bin/env python3
+
+# This file is part of Million Dollar Curve
+
+# Copyright (C) 2015, 2016  CryptoExperts
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+import argparse
+import json
+import os
+import re
+import math
+from datetime import datetime,timedelta
+import gmpy2
+import utils
+
+
+def main():
+
+    # Test local versions of libraries
+
+    utils.test_python_version()
+    utils.test_gmpy2_version()
+
+    # Parse command line arguments
+    
+    parser = argparse.ArgumentParser(description="From a table of draws, output a seed of appropriate length.")
+
+    parser.add_argument("input_draw_file", help="""Text file with draws.""")
+    parser.add_argument("output_seed_file", help="""JSON file where we can store the seed computed from the draws.""")
+    parser.add_argument("entropy_to_gather", help="""Minimum entropy to extract before drawing lone bits.""")
+    parser.add_argument("--nbr_lone_bits", type=int, help="""Number of lone bits to extract.""", default=0)
+    
+    args = parser.parse_args()
+
+
+    # Check arguments
+    
+    output_seed_file = args.output_seed_file
+    if os.path.exists(output_seed_file):
+        utils.exit_error("The output file '%s' already exists. Exiting."%(output_seed_file))
+
+
+    # Declare a few important variables
+    
+    two_pow_entropy_to_gather = (1<<int(args.entropy_to_gather))
+    
+    seed = 0
+    L = 1 # before lone bits are drawn, seed lies in [0,L - 1]
+
+    lone_bits_part = 0
+    nbr_lone_bits = args.nbr_lone_bits
+
+
+    # Scan the input file, construct the seed
+    
+    with open(args.input_draw_file, "r") as f:
+        
+        for line in f:
+
+            if not line or line.strip() == "" or line.startswith("#"):
+                continue
+
+            (draw_id, m, n, draw) = re.split("\s+", line.strip(), maxsplit=3)
+
+            if draw == "None":
+                continue
+            
+            m = int(m)
+            n = int(n)
+            draw = [ int(x) for x in draw.split(",") ]
+            index = index_from_draw(draw,m)
+
+            if L < two_pow_entropy_to_gather:
+                
+                print("Draw %s used to extract entropy"%(draw_id))
+                seed = gmpy2.bincoef(n,m)*seed + index
+                L *= gmpy2.bincoef(n,m)
+                
+            else:
+                
+                print("Draw %s used to extract a lone bit"%(draw_id))
+                b = index & 1
+                seed += L * (b << (args.nbr_lone_bits - nbr_lone_bits))
+                nbr_lone_bits -= 1
+
+            if L >= two_pow_entropy_to_gather and nbr_lone_bits == 0:
+                break
+
+    if nbr_lone_bits > 0 or L < two_pow_entropy_to_gather:
+        utils.exit_error("There wasn't enough draws to collect to request quantity of entropy and lone bits.")
+
+    seed_upper_bound = L * 2**(args.nbr_lone_bits)
+    seed_entropy = math.floor(gmpy2.log2(seed_upper_bound))
+    print("The seed contains more than %d bits of entropy (including the %s lone bits)."%(seed_entropy,args.nbr_lone_bits))
+    print("The seed is %d"%(seed))
+
+    print("Saving the seed to %s"%(output_seed_file))
+    with open(output_seed_file, "w") as f:
+        json.dump({"seed": int(seed),
+                   "seed_upper_bound": int(seed_upper_bound),
+                   "approx_seed_entropy": int(seed_entropy),
+                   "lone_bits": int(args.nbr_lone_bits)}, 
+                  f,
+                  sort_keys=True)
+
+            
+def index_from_draw(draw,m):
+    index = 0
+    draw = sorted(draw)
+    for i in range(m):
+        index += gmpy2.bincoef(draw[i]-1, i+1)
+    return index
+
+
+if __name__ == "__main__":
+    main()
+-----END 01_draws_to_seed.py-----
+
+
+# References
+
+[1] Thomas Baigneres, Cecile Delerablee, Matthieu Finiasz, Louis Goubin, Tancrede Lepoint, and Matthieu Rivain. Trap Me If You Can (Million Dollar Curve). Available on https://www.cryptoexperts.com
+[2] PARI/GP. http://pari.math.u-bordeaux.fr
+[3] Python. https://www.python.org
+[4] GMP. The GNU Multiple Precision Arithmetic Library. https://gmplib.org

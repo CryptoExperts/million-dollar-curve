@@ -41,7 +41,7 @@
     <div class="timeline-badge primary"><i class="fa fa-lock"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase II</strong>: January 27th 2016 <span class="label label-primary">Current Phase</span>
+        <strong>Phase II</strong>: January 27th 2016 <span class="label label-success">Done!</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Commitment on the design to generate MDCurve201601</h4>
@@ -52,7 +52,6 @@
           <pre>e9dd4baf0d351b5a64c59ed6b1efd3108094b3585e17a0e5350fb200500058d9</pre>
 	</figure>
         <p class="card-text">We commited on this design text file in the following ways:
-
 	  
 	  <ul>
 	    <li>
@@ -92,7 +91,7 @@
               <div class="card">
                 <div class="card-header">
                   <h6 class="card-title"><i class="fa fa-twitter"></i>&nbsp;&nbsp;Tweeted by @CryptoExperts on Wednesday January 27, 2016</h6>
-		  <h6 class="card-subtitle text-muted"><a href="https://twitter.com/CryptoExperts/status/692396931864203264?lang=fr">Link to the tweet</a></h6>
+		  <h6 class="card-subtitle text-muted"><a href="https://twitter.com/CryptoExperts/status/692396931864203264">Link to the tweet</a></h6>
                 </div>
                 <div class="card-block">
                   <p class="card-text">
@@ -101,28 +100,79 @@
                   </p>
                 </div>
               </div>
-
-	      
-	      
 	    </li>
 	  </ul>
+	  
         </p>
       </div>
     </div>
   </li>
+
+
+  
   <li>
-    <div class="timeline-badge"><i class="fa fa-lock"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-lock fa-spin"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase III</strong>: January 29th 2016 <span class="label label-default">Waiting</span>
+        <strong>Phase III</strong>: January 29th 2016 <span class="label label-primary">Current Phase</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Commitment on the list of draws to consider in February 2016</h4>
-        <p class="card-text">On January 29th 2016, we commit on a text file containing a list of future draws (starting on February 1st, 2016), a clear pointer to the aforementioned design (Phase II), and a source code that deterministically computes the seed from the listed draws.</p>
-        <p class="card-text">The commit on the resulting text file will consist of the same means as for the commit on the design (Phase II).</p>
+        <p class="card-text">On January 29th 2016, we commited on a text file containing a list of future draws (starting on February 1st, 2016), a clear pointer to the aforementioned design (Phase II), and a source code that deterministically computes the seed from the listed draws.</p>
+	<p class="card-text">This design text file can be downloaded here: <a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/2016_01_29_million_dollar_curve_seeding.txt" | prepend: site.baseurl }}">2016_01_29_million_dollar_curve_seeding.txt</a></p>
+	<p>The SHA256 hash of this file is</p>
+	<figure class="highlight">
+          <pre>f8bdb5bd4957a2d65b567378bb32744d0d0573a77e4ef0247311a5a4b98744da</pre>
+	</figure>
+        <p class="card-text">We commited on this design text file in the following ways:
+	  
+	  <ul>
+	    <li>
+	      We created a <a href="https://letsencrypt.org/" title="Let's Encrypt">Let's Encrypt</a> (U.S.) certificate for the subdomain
+	      <figure class="highlight">
+		<pre class="pre-small"><p>mdcurve.seeding.201601.sha256.f8bdb5bd4957a2d6.5b567378bb32744d.0d0573a77e4ef024.7311a5a4b98744da.cryptoexperts.com</p></pre>
+	      </figure>
+	      where one can see the SHA256 hash of the design text file. The certificate can be consulted/validated by
+	      visiting the following url:
+	      <figure class="highlight">
+		<pre><p><a href="https://mdcurve.seeding.201601.sha256.f8bdb5bd4957a2d6.5b567378bb32744d.0d0573a77e4ef024.7311a5a4b98744da.cryptoexperts.com">https://mdcurve.seeding.201601.sha256.f8bdb5bd4957a2d6.5b567378bb32744d.0d0573a77e4ef024.7311a5a4b98744da.cryptoexperts.com</a></p></pre>
+	      </figure>
+	      The certificate can also be dowloaded here: <a href="{{ "specifications/mdcurve_201601/mdcurve.seeding.201601.crt" | prepend: site.baseurl }}">mdcurve.seeding.201601.crt</a>
+	      The certificate is also archived on <a href="https://crt.sh/?id=12378897">crt.sh</a> (you can look for <code>X509v3 Subject Alternative Name</code>).
+	    </li>
+	    <li>
+	      We have uploaded a sound file on SoundCloud (DE). Check out the song 2016_01_29_million_dollar_curve_seeding on <a href="https://soundcloud.com/cryptoexperts">CryptoExperts' SoundCloud page</a>.
+	    </li>
+	    <li>
+	      We have uploaded a picture of a handwritten version of the SHA256 hash of the design text file on 500px (U.S.). Check it out on <a href="https://500px.com/cryptoexperts">CryptoExperts' profile</a>.
+	    </li>
+            <li>
+	      We published the seeding text file on CryptoExperts' <a href="https://github.com/CryptoExperts/million-dollar-curve" title="Github Million Dollar Curve">Github million-dollar-curve directory</a> (U.S.) and the SHA256 hashes of both the seeding text file and the Let's Encrypt certificate on the <a href="https://bitbucket.org/CryptoExperts/million-dollar-curve" title="Bitbucket Million Dollar Curve">Bitbucket million-dollar-curve directory</a> (Aus).
+	    </li>
+	    <li>
+	      We used the <a href="http://truetimestamp.org">TrueTimeStamp</a> service to have the design text file included in their sequence of fingerprints. The certificate we obtained is here: <a href="{{ "specifications/mdcurve_201601/TrueTimeStamp-certificate-1516.txt" | prepend: site.baseurl }}">TrueTimeStamp-certificate-1497.txt</a>. One can easily check that the SHA256 hash of the file was timestamped on January 29, 2016 10:57:48 am UTC.
+	    </li>
+	    <li>
+	      We published a video showing the SHA256 of the design text file on Dailymotion (FR). You can watch it on <a href="http://www.dailymotion.com/cryptoexperts">CryptoExperts' Dailymotion page</a>.
+	    </li>
+	    <li>
+	      We obtained a certificate from <a href="http://virtual-notary.org/">Virtual-Notary</a> (U.S.). This certificate can be downloaded here: <a href="{{ "specifications/mdcurve_201601/virtual-notary-cert-document-304168.p12" | prepend: site.baseurl }}">virtual-notary-cert-document-304168.p12</a>. One can easily check that the SHA256 hash of the file was timestamped on Friday January 29, 2016 06:05.19 EST (UTC-0500).
+	    </li>
+	    <li>
+	      We used <a href="https://www.proofofexistence.com" title="Proof of Existence">Proof of Existence</a> to have the SHA256 of the seeding text file certified in the Bitcoin blockchain. At the time of writing, the SHA256 of the seeding text file has not yet been seen on the blockchain.
+	    </li>
+
+	  </ul>	  
+	  
+	</p>
       </div>
     </div>
   </li>
+
+
+
+
+  
   <li>
     <div class="timeline-badge"><i class="fa fa-spinner"></i></div>
     <div class="card timeline-card">
