@@ -112,10 +112,10 @@
 
   
   <li>
-    <div class="timeline-badge primary"><i class="fa fa-lock fa-spin"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-lock"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase III</strong>: January 29th 2016 <span class="label label-primary">Current Phase</span>
+        <strong>Phase III</strong>: January 29th 2016 <span class="label label-success">Done!</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Commitment on the list of draws to consider in February 2016</h4>
@@ -160,7 +160,12 @@
 	      We obtained a certificate from <a href="http://virtual-notary.org/">Virtual-Notary</a> (U.S.). This certificate can be downloaded here: <a href="{{ "specifications/mdcurve_201601/virtual-notary-cert-document-304168.p12" | prepend: site.baseurl }}">virtual-notary-cert-document-304168.p12</a>. One can easily check that the SHA256 hash of the file was timestamped on Friday January 29, 2016 06:05.19 EST (UTC-0500).
 	    </li>
 	    <li>
-	      We used <a href="https://www.proofofexistence.com" title="Proof of Existence">Proof of Existence</a> to have the SHA256 of the seeding text file certified in the Bitcoin blockchain. At the time of writing, the SHA256 of the seeding text file has not yet been seen on the blockchain.
+	      We used <a href="https://www.proofofexistence.com" title="Proof of Existence">Proof of Existence</a> to have the SHA256 of the seeding text file certified in the Bitcoin blockchain. The transaction broadcast was timestamped on the 30th of January, 2016, at 23h16 (see the <a href="{{ "specifications/mdcurve_201601/mdcurve201601_proof_of_existence.pdf" | prepend: site.baseurl }}">Document information</a>). This can be checked using the command line:
+	      <figure class="highlight">
+		<pre># curl -d d=f8bdb5bd4957a2d65b567378bb32744d0d0573a77e4ef0247311a5a4b98744da https://www.proofofexistence.com/api/v1/status
+{"digest":"f8bdb5bd4957a2d65b567378bb32744d0d0573a77e4ef0247311a5a4b98744da","payment_address":"14n84qmsbL81gnppaE6WcEvMB5jLrBsZmm","pending":false,"timestamp":"2016-01-29 12:39:00","tx":"99a5f547aa4569cc34d3a9ff66f22b8086f44c0b90bc53e1c4a5ed54f4f7b43c","txstamp":"2016-01-30 23:16:37","blockstamp":"2016-01-30 23:33:22","network":"livenet","success":true}</pre>
+	      </figure>
+
 	    </li>
 	    <li>
 	      We created a new revision of the technical paper on the IACR Cryptology ePrint Archive (International). We added a note to this revision, with the SHA256 of the design text file. You can retrieve this version at <a href="https://eprint.iacr.org/2015/1249/20160129:141701">https://eprint.iacr.org/2015/1249/20160129:141701</a>.	      
@@ -193,10 +198,10 @@
 
   
   <li>
-    <div class="timeline-badge"><i class="fa fa-spinner"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-spinner fa-spin"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase IV</strong>: February 1st - February 14th 2016 <span class="label label-default">Waiting</span>
+        <strong>Phase IV</strong>: February 1st - February 14th 2016 <span class="label label-primary">Current Phase</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Lottery Draws</h4>
