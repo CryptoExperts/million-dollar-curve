@@ -7,7 +7,7 @@ url: "http://cryptoexperts.github.io" # the base hostname & protocol for your si
 twitter_username: CryptoExperts
 github_username:  CryptoExperts
 url_source_code: "https://github.com/CryptoExperts/million-dollar-curve"
-url_paper_relative: "specifications/2016-01-27_trap-me-if-you-can.pdf"
+url_paper_relative: "specifications/2016-02-01_trap-me-if-you-can.pdf"
 
 # Build settings
 markdown: kramdown
