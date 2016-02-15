@@ -198,26 +198,38 @@
 
   
   <li>
-    <div class="timeline-badge primary"><i class="fa fa-spinner fa-spin"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-spinner"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase IV</strong>: February 1st - February 14th 2016 <span class="label label-primary">Current Phase</span>
+        <strong>Phase IV</strong>: February 1st - February 14th 2016 <span class="label label-success">Done!</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Lottery Draws</h4>
-        <p class="card-text">During this period, the draws on which we committed on in Phase III should take place, and the full list of result will be gathered.</p>
+        <p class="card-text">During this period, the draws on which we committed on in Phase III took place, and the full list of results was gathered.</p>
+	<p class="card-text">On February 15th 2016, we published the final list of draw results. This list is available here:</p>
+	<p class="card-text"><a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/draws.txt" | prepend: site.baseurl }}">draws.txt</a></p>
+	<p class="card-text">Among the 260 draws we committed on during Phase III, only 5 did not take place:
+	  <ul>
+	    <li>4 Brazilian draws (namely, <code>2016-02-08_br_quina</code>, <code>2016-02-08_br_lotofacil</code>, <code>2016-02-09_br_quina</code>, and
+	      <code>2016-02-09_br_dupla_sena</code>), which were not drawn probably because of the <a href="https://en.wikipedia.org/wiki/Brazilian_Carnival">Brazilian Carnival</a> (February 5-February 10 in 2016).</li>
+	    <li>Another Brazilian draw (<code>2016-02-03_br_mega_sena</code>), which actually took place on February&nbsp;2.</li>
+	  </ul>
+	  As explained in the file committed in Phase III, these missing draws are not an issue.
+	</p>
       </div>
     </div>
   </li>
+  
   <li>
-    <div class="timeline-badge"><i class="fa fa-gears"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-gears fa-spin"></i></div>
     <div class="card timeline-card">
       <div class="card-header">
-        <strong>Phase V</strong>: After February 14th 2016 <span class="label label-default">Waiting</span>
+        <strong>Phase V</strong>: After February 14th 2016 <span class="label label-primary">Current Phase</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Curve generation</h4>
-        <p class="card-text">On February 14th 2016, all the draws committed on will have (or will not have) taken place, and the full list of results will be made public.</p>
+        <p class="card-text">On February 15th 2016, the required draws we committed on were available, and the full list
+        of results was made public.</p>
         <p class="card-text">Using the source code committed on in Phase III, we will generate the seed from the full list of results.</p>
         <p class="card-text">Using the source code committed on in Phase II and the aforementioned seed, we will generate the MDCurve201601 curve, and update this website accordingly.</p>
       </div>
