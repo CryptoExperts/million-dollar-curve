@@ -278,3 +278,25 @@ ul.faqul li:before {
   font-weight: bold;
   color: #ddd;
 }
+
+.btn-mdc {
+  color:#fff;
+  background-color:#FF4C00;
+  border-color:#FF4C00;
+}
+
+.btn-mdc:hover {
+  background-color:rgb(237,70,47);
+  border-color:rgb(237,70,47);
+  color:#fff;
+}
+
+.btn-mdc:active {
+  background-color:rgb(237,70,47);
+  border-color:rgb(237,70,47);
+  color:#fff;
+}
+
+.btn-mdc:focus {
+  color:#fff;
+}
