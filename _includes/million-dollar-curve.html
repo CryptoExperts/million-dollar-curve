@@ -20,6 +20,7 @@
 <p>
   We will likely generate new Million Dollar Curves in the future on this website as needed.
 </p>
+
 <p class="lead" id="mdc-timeline">
   <strong>Timeline</strong> to generate the MDCurve201601 Curve
 </p>
@@ -221,18 +222,83 @@
   </li>
   
   <li>
-    <div class="timeline-badge primary"><i class="fa fa-gears fa-spin"></i></div>
+    <div class="timeline-badge primary"><i class="fa fa-gears"></i></div>
     <div class="card timeline-card" id="mdc-generation">
       <div class="card-header">
-        <strong>Phase V</strong>: After February 14th 2016 <span class="label label-primary">Current Phase</span>
+        <strong>Phase V</strong>: After February 14th 2016 <span class="label label-success">Done!</span>
       </div>
       <div class="card-block">
         <h4 class="card-title">Curve generation</h4>
         <p class="card-text">On February 15th 2016, the required draws we committed on were available, and the full list
         of results was made public.</p>
-        <p class="card-text">Using the source code committed on in Phase III, we will generate the seed from the full list of results.</p>
-        <p class="card-text">Using the source code committed on in Phase II and the aforementioned seed, we will generate the MDCurve201601 curve, and update this website accordingly.</p>
+        <p class="card-text">
+	  Using the source code committed on in Phase III, we generated the seed from the full list of results:
+	  <figure class="highlight">
+	    <pre>python3 01_draws_to_seed.py draws.txt in_02.json 8192 --nbr_lone_bits 30</pre>
+	  </figure>
+	  We obtained the following file, containing the seed: <a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/in_02.json" | prepend: site.baseurl }}">in_02.json</a>
+	</p>
+        <p class="card-text">Using the source code committed on in Phase II and the aforementioned seed, we generated
+        the BBS parameters, the prime field, and the MDCurve201601 curve as follows:</p>
+	<figure class="highlight">
+	  <pre>python3 02_generate_bbs_parameters.py in_02.json in_03.json 2048</pre>
+	</figure>
+	<p>We obtained the following file, containing the BBS parameters: <a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/in_03.json" | prepend: site.baseurl }}">in_03.json</a></p>
+	<figure class="highlight">
+	  <pre>python3 03_generate_prime_field_using_bbs.py in_03.json in_04.json 256</pre>
+	</figure>
+	<p>We obtained the following file, containing the prime for the underlying field: <a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/in_04.json" | prepend: site.baseurl }}">in_04.json</a></p>
+	<figure class="highlight">
+	  <pre>python3 04_generate_curve_using_bbs.py in_04.json out.json</pre>
+	</figure>
+	<p>On the 29535th iteration, we obtained the following file, containing the parameters for the Million Dollar Curve: <a class="btn btn-primary btn-sm" href="{{ "specifications/mdcurve_201601/out.json" | prepend: site.baseurl }}">out.json</a></p>
+	<p>See below for a summary of what we obtained!</p>
       </div>
     </div>
   </li>
 </ul>
+
+<p class="lead" id="mdcurve201601">
+  The <strong>Million Dollar Curve</strong>
+</p>
+
+<div class="row">
+  <div class="col-md-6">
+  <p>The Million Dollar Curve (MDC201601) is an elliptic curve in Edwards form, suited for cryptographic applications, providing 128 bits of security. It comes with a base point generating a large subgroup. This curve was generated using a novel and (hopefully) unimpeachable process, allowing anyone to make sure that no backdoor could have been introduced. Here is a small list of the features of the million dollar curve:
+    <ul>
+      <li>Since the Million Dollar Curve is an Edwards curve \(x^2+y^2 = 1 + dx^2y^2\) on a prime field \(F_p\) where \(d\) is not a square, it benefits from a <em>complete</em> addition formula.</li>
+      <li>Since it is an Edwards, the number of points of the Million Dollar Curve is a multiple of 4. In addition, it is of the form \(4q\) where \(q\) is prime.</li>
+      <li>The base point generates a subgroup of prime order \(q\).</li>
+      <li>The Million Dollar Curve is twist-secure.</li>
+    </ul>
+  </p>
+  </div>
+  <div class="col-md-6">
+    <img src="{{ "specifications/mdcurve_201601/qrcode_mdcurve201601.png" | prepend: site.baseurl }}" class="img-fluid">
+  </div>
+</div>
+
+<p>
+  The parameters of the Million Dollar Curve are:
+  <figure class="highlight">
+    <pre>
+p         = 109112363276961190442711090369149551676330307646118204517771511330536253156371
+d         = 39384817741350628573161184301225915800358770588933756071948264625804612259721
+nbr pts   = 109112363276961190442711090369149551675722038296192275550523913172742087892972
+q         = 27278090819240297610677772592287387918930509574048068887630978293185521973243
+base pt x = 82549803222202399340024462032964942512025856818700414254726364205096731424315
+base pt y = 91549545637415734422658288799119041756378259523097147807813396915125932811445</pre>
+  </figure>  
+</p>
+<p>Here are a few more properties of the Million Dollar Curve:
+  <figure class="highlight">
+    <pre>
+twist nbr pts       = 109112363276961190442711090369149551676938576996044133485019109488330418419772
+twist q             = 27278090819240297610677772592287387919234644249011033371254777372082604604943
+discriminant        = -16614462762133134914405550644570535788911111926729660424467118032738408266371
+embed. degree       = 27278090819240297610677772592287387918930509574048068887630978293185521973242
+trace               = 608269349925928967247598157794165263400
+twist embed. degree = 27278090819240297610677772592287387919234644249011033371254777372082604604942
+    </pre>
+  </figure>
+</p>
