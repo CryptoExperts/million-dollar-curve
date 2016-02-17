@@ -281,8 +281,8 @@ ul.faqul li:before {
 
 .btn-mdc {
   color:#fff;
-  background-color:#FF4C00;
-  border-color:#FF4C00;
+  background-color:rgb(255,88,0);
+  border-color:rgb(255,88,0);
 }
 
 .btn-mdc:hover {
@@ -299,4 +299,17 @@ ul.faqul li:before {
 
 .btn-mdc:focus {
   color:#fff;
+}
+
+.nav-highlight a {
+  color: #FF4C00;
+}
+
+.nav-highlight a:hover {
+  color: #FF0000;
+}
+
+.nav-highlight.open-active a {
+  color: #fff;
+  background-color: rgb(255,88,0) !important;
 }
